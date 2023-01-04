@@ -1,0 +1,27 @@
+@model AMS.Models.EmployeeViewModel.EmployeeCRUDViewModel
+
+<table class="CustomBlueTable">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Asset Id</th>
+            <th>Name</th>
+            <th>Asset Model No</th>
+            <th>Date Of Purchase</th>
+            <th>Modified Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ foreach (var item in Model.listAssetCRUDViewModel)
+            {
+<tr>
+    <td>@item.Id</td>
+    <td>@item.AssetId</td>
+    <td>@item.Name</td>
+    <td>@item.AssetModelNo</td>
+    <td>@item.DateOfPurchase.ToString("dd MMMM yyyy")</td>
+    <td>@item.ModifiedDate.ToString("dd MMMM yyyy")</td>
+</tr> } }
+    </tbody>
+</table>
+
