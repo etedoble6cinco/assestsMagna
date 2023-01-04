@@ -159,7 +159,7 @@ namespace AMS.Controllers
         {
             JsonResultViewModel _JsonResultViewModel = new();
             try
-            {
+             {
                 Asset _Asset = new();
                 if (vm.Id > 0)
                 {

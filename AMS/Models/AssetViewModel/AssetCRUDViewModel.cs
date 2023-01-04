@@ -22,7 +22,7 @@ namespace AMS.Models.AssetViewModel
         [Display(Name = "Nombre")]
         [Required]
         public string Name { get; set; }
-        [Display(Name="Descripcion")]
+        [Display(Name="Nombre SMI")]
         public string Description { get; set; }
         [Display(Name = "Categoria")]
         public int Category { get; set; }
@@ -46,27 +46,26 @@ namespace AMS.Models.AssetViewModel
         public int Department { get; set; }
         
         public string DepartmentDisplay { get; set; }
-        [Display(Name = "Administrado por" +
-            "")]
+        [Display(Name = "Administrado por")]
         public int SubDepartment { get; set; }
         public string SubDepartmentDisplay { get; set; }
         [Display(Name = "Mantenimiento")]
         public int? WarranetyInMonth { get; set; }
         [Display(Name = "Ultima revision")]
         public int? DepreciationInMonth { get; set; }
-        [Display(Name = "Imagen del Activo")]
+        [Display(Name = "Imagen")]
         public string ImageURL { get; set; } = "/upload/blank-asset.png";
         public IFormFile ImageURLDetails { get; set; }
-        [Display(Name = "Fecha de Alta")]
+        [Display(Name = "Fecha de Registro")]
         public DateTime DateOfPurchase { get; set; } = DateTime.Now;
-        [Display(Name = "Fecha de Compra")]
+        [Display(Name = "Fecha de Llegada")]
         public DateTime DateOfManufacture { get; set; } = DateTime.Now;
-        [Display(Name = "Año de valoracion ")]
+        [Display(Name = "Año de valoracion")]
         public DateTime YearOfValuation { get; set; } = DateTime.Now;
-        [Display(Name = "Empleado asignado")]
+        [Display(Name = "Persona Responsable")]
         public Int64 AssignEmployeeId { get; set; }
         public string AssignEmployeeDisplay { get; set; }
-        [Display(Name = "Estado del Activo")]
+        [Display(Name = "Estatus")]
         public int AssetStatus { get; set; }
         public string AssetStatusDisplay { get; set; }
         [Display(Name = "Disponibilidad")]
@@ -77,6 +76,7 @@ namespace AMS.Models.AssetViewModel
         public string Barcode { get; set; }
         [Display(Name = "Observaciones")]
         public string CommentMessage { get; set; }
+        
         public string CurrentURL { get; set; }
         public EmployeeCRUDViewModel EmployeeCRUDViewModel { get; set; }
         public List<AssetHistoryCRUDViewModel> listAssetHistoryCRUDViewModel { get; set; }
