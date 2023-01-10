@@ -17,6 +17,8 @@ C:\Users\analista.sistemas\Documents\assestsMagna\AMS\obj\Release\net6.0\PubTmp\
 C:\Users\analista.sistemas\Documents\assestsMagna\AMS\obj\Release\net6.0\PubTmp\Out\refs\Microsoft.AspNetCore.Connections.Abstractions.dll
 C:\Users\analista.sistemas\Documents\assestsMagna\AMS\obj\Release\net6.0\PubTmp\Out\refs\Microsoft.AspNetCore.CookiePolicy.dll
 C:\Users\analista.sistemas\Documents\assestsMagna\AMS\obj\Release\net6.0\PubTmp\Out\refs\Microsoft.AspNetCore.Cors.dll
+C:\Users\analista.sistemas\Documents\assestsMagna\AMS\obj\Release\net6.0\PubTmp\Out\refs\Microsoft.AspNetCore.Cryptography.Internal.dll
+C:\Users\analista.sistemas\Documents\assestsMagna\AMS\obj\Release\net6.0\PubTmp\Out\refs\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
 C:\Users\analista.sistemas\Documents\assestsMagna\AMS\obj\Release\net6.0\PubTmp\Out\refs\Microsoft.AspNetCore.DataProtection.Abstractions.dll
 C:\Users\analista.sistemas\Documents\assestsMagna\AMS\obj\Release\net6.0\PubTmp\Out\refs\Microsoft.AspNetCore.DataProtection.dll
 C:\Users\analista.sistemas\Documents\assestsMagna\AMS\obj\Release\net6.0\PubTmp\Out\refs\Microsoft.AspNetCore.DataProtection.Extensions.dll
@@ -109,6 +111,8 @@ C:\Users\analista.sistemas\Documents\assestsMagna\AMS\obj\Release\net6.0\PubTmp\
 C:\Users\analista.sistemas\Documents\assestsMagna\AMS\obj\Release\net6.0\PubTmp\Out\refs\Microsoft.Extensions.Hosting.Abstractions.dll
 C:\Users\analista.sistemas\Documents\assestsMagna\AMS\obj\Release\net6.0\PubTmp\Out\refs\Microsoft.Extensions.Hosting.dll
 C:\Users\analista.sistemas\Documents\assestsMagna\AMS\obj\Release\net6.0\PubTmp\Out\refs\Microsoft.Extensions.Http.dll
+C:\Users\analista.sistemas\Documents\assestsMagna\AMS\obj\Release\net6.0\PubTmp\Out\refs\Microsoft.Extensions.Identity.Core.dll
+C:\Users\analista.sistemas\Documents\assestsMagna\AMS\obj\Release\net6.0\PubTmp\Out\refs\Microsoft.Extensions.Identity.Stores.dll
 C:\Users\analista.sistemas\Documents\assestsMagna\AMS\obj\Release\net6.0\PubTmp\Out\refs\Microsoft.Extensions.Localization.Abstractions.dll
 C:\Users\analista.sistemas\Documents\assestsMagna\AMS\obj\Release\net6.0\PubTmp\Out\refs\Microsoft.Extensions.Localization.dll
 C:\Users\analista.sistemas\Documents\assestsMagna\AMS\obj\Release\net6.0\PubTmp\Out\refs\Microsoft.Extensions.Logging.Abstractions.dll

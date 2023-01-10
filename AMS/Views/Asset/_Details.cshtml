@@ -2,28 +2,26 @@
 
 
 <table class="CustomBlueTable" style="width:100%;" border="1">
-    <tr><th>Id</th><td>@Model.Id</td></tr>
-    <tr><th>Asset Id</th><td>@Model.AssetId</td></tr>
+    <tr><th>Identificador Unico</th><td>@Model.Id</td></tr>
+    <tr><th>Numero Serie</th><td>@Model.AssetId</td></tr>
     <tr>
-        <th>Barcode</th>
+        <th>Codigo de barras</th>
         <td>
             <img src="@Model.Barcode" alt="" />
         </td>
     </tr>
-    <tr><th>Numero Serie</th><td>@Model.AssetModelNo</td></tr>
-    <tr><th>Nombre</th><td>@Model.Name</td></tr>
+    <tr><th>Modelo</th><td>@Model.AssetModelNo</td></tr>
+    <tr><th>Nombre SMI</th><td>@Model.Name</td></tr>
 	<tr><th>Estatus</th><td>@Model.AssetStatusDisplay</td></tr>
     <tr><th>Descripcion</th><td>@Model.Description</td></tr>
     <tr><th>Categoria</th><td>@Model.CategoryDisplay</td></tr>
     <tr><th>Sub Categoria</th><td>@Model.SubCategoryDisplay</td></tr>
     <tr><th>Cantidad</th><td>@Model.Quantity</td></tr>
-    <tr><th>Precio</th><td>@Model.UnitPrice</td></tr>
-    <tr><th>P</th><td>@Model.SupplierDisplay</td></tr>
-    <tr><th>Location</th><td>@Model.Location</td></tr>
-    <tr><th>Department</th><td>@Model.DepartmentDisplay</td></tr>
-    <tr><th>Sub Department</th><td>@Model.SubDepartmentDisplay</td></tr>
-    <tr><th>Warranety In Month</th><td>@Model.WarranetyInMonth</td></tr>
-    <tr><th>Depreciation In Month</th><td>@Model.DepreciationInMonth</td></tr>
+    <tr><th>Ubicacion</th><td>@Model.Location</td></tr>
+    <tr><th>Departamento</th><td>@Model.DepartmentDisplay</td></tr>
+    <tr><th>Sub Departamento</th><td>@Model.SubDepartmentDisplay</td></tr>
+    <tr><th>Tipo de compra</th><td>@Model.WarranetyInMonth</td></tr>
+    <tr><th>Ultima Revision</th><td>@Model.DepreciationInMonth</td></tr>
     <tr>
         <th>Image</th>
         <td>
@@ -39,16 +37,15 @@
             </div>
         </td>
     </tr>
-    <tr><th>Date Of Purchase</th><td>@Model.DateOfPurchase</td></tr>
-    <tr><th>Date Of Manufacture</th><td>@Model.DateOfManufacture</td></tr>
-    <tr><th>Year Of Valuation</th><td>@Model.YearOfValuation</td></tr>
-    <tr><th>Assign User Id</th><td>@Model.AssignEmployeeId</td></tr>   
-    <tr><th>Is Avilable</th><td>@Model.IsAvilable</td></tr>
-    <tr><th>Note</th><td>@Model.Note</td></tr>
-    <tr><th>Created Date</th><td>@Model.CreatedDate</td></tr>
-    <tr><th>Modified Date</th><td>@Model.ModifiedDate</td></tr>
-    <tr><th>Created By</th><td>@Model.CreatedBy</td></tr>
-    <tr><th>Modified By</th><td>@Model.ModifiedBy</td></tr>
+ 
+    <tr><th>Fecha de llegada</th><td>@Model.DateOfManufacture</td></tr>
+    <tr><th>Identificador de la Persona responsable</th><td>@Model.AssignEmployeeId</td></tr>   
+    <tr><th>Disponibilidad</th><td>@Model.IsAvilable</td></tr>
+    <tr><th>Notas</th><td>@Model.Note</td></tr>
+    <tr><th>Fecha de Creacion</th><td>@Model.CreatedDate</td></tr>
+    <tr><th>Fecha de Modificacion</th><td>@Model.ModifiedDate</td></tr>
+    <tr><th>Creado Por</th><td>@Model.CreatedBy</td></tr>
+    <tr><th>Modificado Por</th><td>@Model.ModifiedBy</td></tr>
 </table>
 
 

@@ -570,3 +570,7 @@ C:\Users\analista.sistemas\Documents\assestsMagna\AMS\obj\Release\net6.0\refint\
 C:\Users\analista.sistemas\Documents\assestsMagna\AMS\obj\Release\net6.0\AMS.pdb
 C:\Users\analista.sistemas\Documents\assestsMagna\AMS\obj\Release\net6.0\AMS.genruntimeconfig.cache
 C:\Users\analista.sistemas\Documents\assestsMagna\AMS\obj\Release\net6.0\ref\AMS.dll
+C:\Users\analista.sistemas\Documents\assestsMagna\AMS\bin\Release\net6.0\refs\Microsoft.AspNetCore.Cryptography.Internal.dll
+C:\Users\analista.sistemas\Documents\assestsMagna\AMS\bin\Release\net6.0\refs\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+C:\Users\analista.sistemas\Documents\assestsMagna\AMS\bin\Release\net6.0\refs\Microsoft.Extensions.Identity.Core.dll
+C:\Users\analista.sistemas\Documents\assestsMagna\AMS\bin\Release\net6.0\refs\Microsoft.Extensions.Identity.Stores.dll

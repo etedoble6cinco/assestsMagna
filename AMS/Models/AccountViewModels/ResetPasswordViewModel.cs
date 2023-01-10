@@ -14,8 +14,8 @@ namespace AMS.Models.AccountViewModels
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [Display(Name = "Confirmar Contrase♫a")]
+        [Compare("Password", ErrorMessage = "La confirmacion de la constrase♫a y la constrase♫a no son iguales.")]
         public string ConfirmPassword { get; set; }
 
         public string Code { get; set; }

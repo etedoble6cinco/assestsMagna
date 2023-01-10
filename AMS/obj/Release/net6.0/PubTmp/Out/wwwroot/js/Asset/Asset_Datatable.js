@@ -193,7 +193,11 @@ $(document).ready(function () {
         'columnDefs': [{
             'targets': [1, 9, 10, 11],
             'orderable': false,
-        }],
+        },
+        {
+            'targets': [6],
+            'visible': false 
+        }      ],
 
         "lengthMenu": [[20, 10, 15, 25, 50, 100, 200], [20, 10, 15, 25, 50, 100, 200]]
     });
