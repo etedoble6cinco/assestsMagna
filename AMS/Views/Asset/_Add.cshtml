@@ -10,7 +10,10 @@
             <input type="hidden" asp-for="CreatedDate" />
             <input type="hidden" asp-for="CreatedBy" />
             <input type="hidden" asp-for="CurrentURL" />
-
+            <input type="hidden" value="0" asp-for="UnitPrice" /> <!--ESCONDIDO DEL FORMULARIO-->
+            <input type="hidden" value="0" asp-for="Quantity" /> <!--ESCONDIDO DEL FORMULARIO-->
+            <input type="hidden" asp-for="DateOfPurchase" /> <!--ESCONDIDO DEL FORMULARIO-->
+            <input type="hidden" asp-for="YearOfValuation" /> <!--ESCONDIDO DEL FORMULARIO-->          
             <form id="frmAsset">
                 <div class="card card-primary card-outline card-tabs">
                     <div class="card-header p-0 pt-1 border-bottom-0">
@@ -63,13 +66,7 @@
                                                 <span asp-validation-for="Description" class="text-danger"></span>
                                             </div>
                                         </div>
-                                        <div class="form-group row">
-                                            <label asp-for="UnitPrice" class="col-sm-3 col-form-label"></label>
-                                            <div class="col-sm-9">
-                                                <input asp-for="UnitPrice" class="form-control" id="UnitPrice" type="number" />
-                                                <span asp-validation-for="UnitPrice" class="text-danger"></span>
-                                            </div>
-                                        </div>
+                                       
                                         <div class="form-group row">
                                             <label asp-for="AssetStatus" class="col-sm-3 col-form-label"></label>
                                             <div class="col-sm-9">
@@ -78,13 +75,7 @@
                                                 <span asp-validation-for="AssetStatus" class="text-danger"></span>
                                             </div>
                                         </div>
-                                        <div class="form-group row">
-                                            <label asp-for="DateOfPurchase" class="col-sm-4 col-form-label"></label>
-                                            <div class="col-sm-8">
-                                                <input asp-for="DateOfPurchase" class="form-control" type="date" />
-                                                <span asp-validation-for="DateOfPurchase" class="text-danger"></span>
-                                            </div>
-                                        </div>
+                                       <!--DATE OF PURCHASE HAS BEEN REMOVE FROM THE FORM-->
                                     </div>
 
                                     <div class="col-6 col-sm-6">
@@ -95,7 +86,7 @@
                                                 <span asp-validation-for="Barcode" class="text-danger"></span>
                                             </div>
                                         </div>
-
+                                        <!--CATEGORY COMBOBOX-->
                                         <div class="form-group row">
                                             <label asp-for="Category" class="col-sm-3 col-form-label"></label>
                                             <div class="col-sm-9">
@@ -105,6 +96,7 @@
                                                 <span asp-validation-for="Category" class="text-danger"></span>
                                             </div>
                                         </div>
+                                        <!--SUBCATEGORY COMBOBOX-->
                                         <div class="form-group row">
                                             <label asp-for="SubCategory" class="col-sm-3 col-form-label"></label>
                                             <div class="col-sm-9">
@@ -114,6 +106,7 @@
                                                 <span asp-validation-for="SubCategory" class="text-danger"></span>
                                             </div>
                                         </div>
+                                        <!--SUPPLIER COMBOBOX-->
                                         <div class="form-group row">
                                             <label asp-for="Supplier" class="col-sm-3 col-form-label"></label>
                                             <div class="col-sm-9">
@@ -123,6 +116,7 @@
                                                 <span asp-validation-for="Supplier" class="text-danger"></span>
                                             </div>
                                         </div>
+                                        <!--DEPARTAMENT COMBOBOX-->
                                         <div class="form-group row">
                                             <label asp-for="Department" class="col-sm-3 col-form-label"></label>
                                             <div class="col-sm-9">
@@ -132,6 +126,7 @@
                                                 <span asp-validation-for="Department" class="text-danger"></span>
                                             </div>
                                         </div>
+                                        <!--SUBDEPARTMENT COMBOBOX-->
                                         <div class="form-group row">
                                             <label asp-for="SubDepartment" class="col-sm-3 col-form-label"></label>
                                             <div class="col-sm-9">
@@ -144,10 +139,12 @@
                                     </div>
                                 </div>
                             </div>
-
+                            <!--TAB TWO--->
+                       
                             <div class="tab-pane fade" id="divOtherInfo" role="tabpanel" aria-labelledby="divOtherInfoTab">
                                 <div class="row">
                                     <div class="col-6 col-sm-6">
+                        <!--DATE OF MANUFACTURE INPUT HAS BEEN REPLACE FOR *FECHA DE LLEGADA-->
                                         <div class="form-group row">
                                             <label asp-for="DateOfManufacture" class="col-sm-4 col-form-label"></label>
                                             <div class="col-sm-8">
@@ -155,13 +152,10 @@
                                                 <span asp-validation-for="DateOfManufacture" class="text-danger"></span>
                                             </div>
                                         </div>
-                                        <div class="form-group row">
-                                            <label asp-for="YearOfValuation" class="col-sm-4 col-form-label"></label>
-                                            <div class="col-sm-8">
-                                                <input asp-for="YearOfValuation" class="form-control" id="YearOfValuation" type="date" />
-                                                <span asp-validation-for="YearOfValuation" class="text-danger"></span>
-                                            </div>
-                                        </div>
+
+                        <!-- YEAR OF VALUATON INPUT *HAS BEEN REMOVE FROM THE FORM-->
+                                       
+                        <!--WARRENTY IN MONTH-->
                                         <div class="form-group row">
                                             <label asp-for="WarranetyInMonth" class="col-sm-4 col-form-label"></label>
                                             <div class="col-sm-8">
@@ -169,6 +163,7 @@
                                                 <span asp-validation-for="WarranetyInMonth" class="text-danger"></span>
                                             </div>
                                         </div>
+                        <!--DEPRECIATION IN MONTH-->
                                         <div class="form-group row">
                                             <label asp-for="DepreciationInMonth" class="col-sm-4 col-form-label"></label>
                                             <div class="col-sm-8">
@@ -177,7 +172,7 @@
                                             </div>
                                         </div>
                                     </div>
-
+                                    <!--LOCATION INPUT-->
                                     <div class="col-6 col-sm-6">
                                         <div class="form-group row">
                                             <label asp-for="Location" class="col-sm-3 col-form-label"></label>
@@ -186,6 +181,8 @@
                                                 <span asp-validation-for="Location" class="text-danger"></span>
                                             </div>
                                         </div>
+
+                                        <!--IMAGE URL INPUT-->
                                         <div class="form-group row">
                                             <label asp-for="ImageURL" class="col-sm-3 col-form-label"></label>
                                             <div class="col-sm-9">
@@ -195,6 +192,7 @@
                                                 </span>
                                             </div>
                                         </div>
+                                        <!--NOTE INPUT-->
                                         <div class="form-group row">
                                             <label asp-for="Note" class="col-sm-3 col-form-label"></label>
                                             <div class="col-sm-9">
@@ -205,7 +203,7 @@
                                     </div>
                                 </div>
                             </div>
-
+                            <!-- TAB TREE-->
                             <div class="tab-pane fade" id="divOtherTab" role="tabpanel" aria-labelledby="divOtherTab">
                                 <div class="row">
                                     <div class="col-6 col-sm-6">
@@ -231,6 +229,8 @@
                         <div class="col-sm-6">
                         </div>
                         <div class="col-sm-6">
+                            <!--BUTTON CONTAINER-->
+
                             <input type="button" id="btnSave" value="Save" onclick="SaveAsset()" class="btn btn-info">
                             <button type="button" id="btnClose" class="btn btn-danger" data-dismiss="modal">Close</button>
                         </div>
