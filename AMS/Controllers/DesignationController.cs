@@ -25,7 +25,7 @@ namespace AMS.Controllers
             _iCommon = iCommon;
         }
 
-        [Authorize(Roles = Pages.MainMenu.Designation.RoleName)]
+        [Authorize(Roles = Pages.RoleViewModel.Designation)]
         [HttpGet]
         public IActionResult Index()
         {

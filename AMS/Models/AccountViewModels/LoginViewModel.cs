@@ -13,7 +13,7 @@ namespace AMS.Models.AccountViewModels
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [Display(Name = "Recordarme")]
+        [Display(Name = "Remember me?")]
         public bool RememberMe { get; set; }
         public string Latitude { get; set; }
         public string Longitude { get; set; }

@@ -2,9 +2,10 @@
 using AMS.Helpers;
 using AMS.Models;
 using AMS.Models.AccountViewModels;
-using AMS.Models.UserAccountViewModel;
 using AMS.Services;
 using Microsoft.AspNetCore.Identity;
+using AMS.Models.UserProfileViewModel;
+using Microsoft.EntityFrameworkCore;
 
 namespace AMS.ConHelper
 {
@@ -38,7 +39,7 @@ namespace AMS.ConHelper
             }
         }
 
-        public async Task<Tuple<ApplicationUser, string>> CreateUserProfile(UserProfileViewModel vm, string LoginUser)
+        public async Task<Tuple<ApplicationUser, string>> CreateUserProfile(UserProfileCRUDViewModel vm, string LoginUser)
         {
             UserProfile _UserProfile = new UserProfile();
             string errorMessage = string.Empty;
@@ -61,8 +62,6 @@ namespace AMS.ConHelper
                 if (_IdentityResult.Succeeded)
                 {
                     vm.ApplicationUserId = _ApplicationUser.Id;
-                    vm.PasswordHash = _ApplicationUser.PasswordHash;
-                    vm.ConfirmPassword = _ApplicationUser.PasswordHash;
                     vm.CreatedDate = DateTime.Now;
                     vm.ModifiedDate = DateTime.Now;
                     vm.CreatedBy = LoginUser;
@@ -77,9 +76,10 @@ namespace AMS.ConHelper
                     await _context.UserProfile.AddAsync(_UserProfile);
                     var result = await _context.SaveChangesAsync();
 
-                    for (int i = 0; i < DefaultUserPage.PageCollection.Length; i++)
+                    var _ManageRoleDetails = await _context.ManageUserRolesDetails.Where(x => x.ManageRoleId == vm.RoleId && x.IsAllowed == true).ToListAsync();
+                    foreach (var item in _ManageRoleDetails)
                     {
-                        await _userManager.AddToRoleAsync(_ApplicationUser, DefaultUserPage.PageCollection[i]);
+                        await _userManager.AddToRoleAsync(_ApplicationUser, item.RoleName);
                     }
                 }
                 else

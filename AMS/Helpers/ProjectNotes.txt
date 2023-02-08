@@ -78,3 +78,48 @@ dotnet add package Pomelo.EntityFrameworkCore.MySql --version 6.0.2
 dotnet add package UAParser --version 3.1.47
 
 
+
+
+
+
+
+
+
+
+
+
+
+Old Code:*************************
+private async Task<int> AssetAllocationUpdate(AssetCRUDViewModel vm, Asset _Asset)
+        {
+            int _AssetStatusValue = vm.AssetStatus;
+            if (_Asset.AssignEmployeeId != vm.AssignEmployeeId)
+            {
+                if (_Asset.AssignEmployeeId == 0)
+                {
+                    await AddAssetHistory(_Asset.Id, vm.AssignEmployeeId, "Unassigned Asset Assigned to Employee.");
+                    _AssetStatusValue = AssetStatusValue.InUse;
+                }
+                else
+                {
+                    if (vm.AssignEmployeeId == 0)
+                    {
+                        await AddAssetHistory(_Asset.Id, _Asset.AssignEmployeeId, "Asset Unassigned from Employee.");
+                        _AssetStatusValue = AssetStatusValue.Available;
+                    }
+                    else
+                    {
+                        await AddAssetHistory(_Asset.Id, _Asset.AssignEmployeeId, "Asset Unassigned from Employee.");
+                        await AddAssetHistory(_Asset.Id, vm.AssignEmployeeId, "Asset Assigned to Employee.");
+                        _AssetStatusValue = AssetStatusValue.InUse;
+                    }
+                }
+            }
+            else
+            {
+                await AddAssetHistory(_Asset.Id, vm.AssignEmployeeId, "Asset Updated.");
+                _AssetStatusValue = vm.AssetStatus;
+            }
+
+            return _AssetStatusValue;
+        }

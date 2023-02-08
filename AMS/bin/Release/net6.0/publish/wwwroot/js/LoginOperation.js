@@ -13,13 +13,17 @@ var SetGeolocation = function () {
     }
 };
 
-
 var LoginAction = function () {
-    if (!$("#frmLogin").valid()) {
+    var _Email = $('#Email').val();
+    if (_Email == '') {
+        FieldValidationAlert('#Email', 'Email Address is Required.', "warning");
         return;
     }
-    $('#Latitude').val(lat);
-    $('#Longitude').val(long);
+    var _Password = $('#Password').val();
+    if (_Password == '') {
+        FieldValidationAlert('#Password', 'Password is Required.', "warning");
+        return;
+    }
 
     var _frmLogin = $("#frmLogin").serialize();
     $("#btnUserLogin").LoadingOverlay("show", {
@@ -38,17 +42,22 @@ var LoginAction = function () {
                 location.href = "/Dashboard/Index";
             }
             else {
-                toastr.error(result.AlertMessage);
+                toastr.error('Invalid login attempt.');
                 $("#btnUserLogin").LoadingOverlay("hide", true);
             }
         },
         error: function (errormessage) {
             $("#btnUserLogin").LoadingOverlay("hide", true);
-            SwalSimpleAlert(errormessage.responseText, "warning");
+            //SwalSimpleAlertNW(errormessage.responseText, "warning");
+            Swal.fire({
+                html: '<pre>' + errormessage.responseText + '</pre>',
+                customClass: {
+                    popup: 'format-pre'
+                }
+            });
         }
     });
 }
-
 
 var SignOutAction = function () {
     $('#Latitude').val(lat);
@@ -79,9 +88,9 @@ var SaveUserInfoFromBrowser = function () {
     UserInfoFromBrowser.OSVersion = parser.getResult().os.version;
     UserInfoFromBrowser.UA = parser.getResult().ua;
 
-    var _UserEmailAddress = $('#UserEmailAddress').val();
-    UserInfoFromBrowser.CreatedBy = _UserEmailAddress;
-    UserInfoFromBrowser.ModifiedBy = _UserEmailAddress;
+    var _Email = $('#Email').val();
+    UserInfoFromBrowser.CreatedBy = _Email;
+    UserInfoFromBrowser.ModifiedBy = _Email;
 
     $.ajax({
         type: "POST",
@@ -106,4 +115,22 @@ var GetBrowserUniqueID = function () {
     uid += screen_info.width || '';
     uid += screen_info.pixelDepth || '';
     return uid;
+}
+
+var FieldValidationAlert = function (FieldName, Message, icontype) {
+    Swal.fire({
+        title: Message,
+        icon: icontype,
+        onAfterClose: () => {
+            $(FieldName).focus();
+        }
+    });
+}
+
+var ValidateEmail = function (email_id) {
+    const regex_pattern = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (regex_pattern.test(email_id) == false) {       
+        return false;
+    }
+    return true;
 }

@@ -5,7 +5,7 @@ namespace AMS.Models.UserInfoFromBrowserViewModel
 {
     public class UserInfoFromBrowserCRUDViewModel : EntityBase
     {
-        [Display(Name = "Identificador Unico")]
+        [Display(Name = "SL")]
         [Required]
         public Int64 Id { get; set; }
         public string BrowserUniqueID { get; set; }

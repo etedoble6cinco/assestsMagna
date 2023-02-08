@@ -1,4 +1,4 @@
-@model AMS.Models.AssetViewModel.BarcodeViewModel
+@model AMS.Models.AssetViewModel.ScannerCodeViewModel
 
 
 <div class="row">
@@ -22,7 +22,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.listBarcodeViewModel)
+                @foreach (var item in Model.listScannerCodeViewModel)
                 {
                 <tr>
                     <td>@item.Id</td>
@@ -49,7 +49,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.sublistBarcodeViewModel)
+                @foreach (var item in Model.sublistScannerCodeViewModel)
                 {
                 <tr>
                     <td>@item.Id</td>

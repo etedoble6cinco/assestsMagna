@@ -101,7 +101,7 @@ namespace AMS.Services
 
         }
 
-        public void InitAppData()
+        public async Task InitAppData()
         {
             var _GetSupplierList = _CommonData.GetSupplierList();
             foreach (var item in _GetSupplierList)
@@ -111,7 +111,7 @@ namespace AMS.Services
                 item.CreatedBy = "Admin";
                 item.ModifiedBy = "Admin";
                 _context.Supplier.Add(item);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             var _GetAssetCategorieList = _CommonData.GetAssetCategorieList();
             foreach (var item in _GetAssetCategorieList)
@@ -121,7 +121,7 @@ namespace AMS.Services
                 item.CreatedBy = "Admin";
                 item.ModifiedBy = "Admin";
                 _context.AssetCategorie.Add(item);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             var _GetAssetSubCategorieList = _CommonData.GetAssetSubCategorieList();
             foreach (var item in _GetAssetSubCategorieList)
@@ -131,7 +131,7 @@ namespace AMS.Services
                 item.CreatedBy = "Admin";
                 item.ModifiedBy = "Admin";
                 _context.AssetSubCategorie.Add(item);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             var _GetAssetStatusList = _CommonData.GetAssetStatusList();
             foreach (var item in _GetAssetStatusList)
@@ -141,7 +141,7 @@ namespace AMS.Services
                 item.CreatedBy = "Admin";
                 item.ModifiedBy = "Admin";
                 _context.AssetStatus.Add(item);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             var _GetDepartmentList = _CommonData.GetDepartmentList();
             foreach (var item in _GetDepartmentList)
@@ -151,7 +151,7 @@ namespace AMS.Services
                 item.CreatedBy = "Admin";
                 item.ModifiedBy = "Admin";
                 _context.Department.Add(item);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             var _GetSubDepartmentList = _CommonData.GetSubDepartmentList();
             foreach (var item in _GetSubDepartmentList)
@@ -161,17 +161,7 @@ namespace AMS.Services
                 item.CreatedBy = "Admin";
                 item.ModifiedBy = "Admin";
                 _context.SubDepartment.Add(item);
-                _context.SaveChanges();
-            }
-            var _GetEmployeeList = _CommonData.GetEmployeeList();
-            foreach (var item in _GetEmployeeList)
-            {
-                item.CreatedDate = DateTime.Now;
-                item.ModifiedDate = DateTime.Now;
-                item.CreatedBy = "Admin";
-                item.ModifiedBy = "Admin";
-                _context.Employee.Add(item);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             var _GetDesignationList = _CommonData.GetDesignationList();
             foreach (var item in _GetDesignationList)
@@ -181,7 +171,7 @@ namespace AMS.Services
                 item.CreatedBy = "Admin";
                 item.ModifiedBy = "Admin";
                 _context.Designation.Add(item);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             var _GetAssetRequestList = _CommonData.GetAssetRequestList();
             foreach (var item in _GetAssetRequestList)
@@ -197,7 +187,7 @@ namespace AMS.Services
                 item.CreatedBy = "Admin";
                 item.ModifiedBy = "Admin";
                 _context.AssetRequest.Add(item);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             var _GetAssetAssetIssueList = _CommonData.GetAssetAssetIssueList();
             foreach (var item in _GetAssetAssetIssueList)
@@ -213,7 +203,17 @@ namespace AMS.Services
                 item.CreatedBy = "Admin";
                 item.ModifiedBy = "Admin";
                 _context.AssetIssue.Add(item);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
+            }
+            var _GetManageRoleList = _CommonData.GetManageRoleList();
+            foreach (var item in _GetManageRoleList)
+            {
+                item.CreatedDate = DateTime.Now;
+                item.ModifiedDate = DateTime.Now;
+                item.CreatedBy = "Admin";
+                item.ModifiedBy = "Admin";
+                _context.ManageUserRoles.Add(item);
+                await _context.SaveChangesAsync();
             }
 
             var _GetCompanyInfo = _CommonData.GetCompanyInfo();
@@ -225,6 +225,43 @@ namespace AMS.Services
             _context.SaveChanges();
         }
 
+        public async Task GenerateUserUserRole()
+        {
+            var _ManageRole = await _context.ManageUserRoles.ToListAsync();
+            var _GetRoleList = await _roles.GetRoleList();
+
+            foreach (var role in _ManageRole)
+            {
+                foreach (var item in _GetRoleList)
+                {
+                    ManageUserRolesDetails _ManageRoleDetails = new();
+                    _ManageRoleDetails.ManageRoleId = role.Id;
+                    _ManageRoleDetails.RoleId = item.RoleId;
+                    _ManageRoleDetails.RoleName = item.RoleName;
+
+                    if (role.Id == 1)
+                    {
+                        _ManageRoleDetails.IsAllowed = true;
+                    }
+                    else if (role.Id == 2 && item.RoleName == "User Profile" || item.RoleName == "Leave MGS" || item.RoleName == "Dashboard")
+                    {
+                        _ManageRoleDetails.IsAllowed = true;
+                    }
+                    else
+                    {
+                        _ManageRoleDetails.IsAllowed = false;
+                    }
+
+                    _ManageRoleDetails.CreatedDate = DateTime.Now;
+                    _ManageRoleDetails.ModifiedDate = DateTime.Now;
+                    _ManageRoleDetails.CreatedBy = "Admin";
+                    _ManageRoleDetails.ModifiedBy = "Admin";
+                    _context.Add(_ManageRoleDetails);
+                    await _context.SaveChangesAsync();
+                }
+            }
+        }
+
         public async Task CreateAsset()
         {
             try
@@ -234,6 +271,8 @@ namespace AMS.Services
                 {
                     item.AssetId = "ID-" + StaticData.RandomDigits(6);
                     item.Barcode = SampleBarcode.Default;
+                    item.QRCode = item.AssetId;
+                    item.QRCodeImage = SampleQRCode.Default;
 
                     item.CreatedDate = DateTime.Now;
                     item.ModifiedDate = DateTime.Now;
@@ -257,28 +296,20 @@ namespace AMS.Services
                 throw ex;
             }
         }
-
         public async Task CreateDefaultSuperAdmin()
         {
             try
             {
-                await _roles.GenerateRolesFromPagesAsync();
-
+                await _roles.GenerateRolesFromPageList();
                 ApplicationUser superAdmin = new ApplicationUser();
                 superAdmin.Email = _superAdminDefaultOptions.Email;
                 superAdmin.UserName = superAdmin.Email;
                 superAdmin.EmailConfirmed = true;
-
                 var result = await _userManager.CreateAsync(superAdmin, _superAdminDefaultOptions.Password);
-
                 if (result.Succeeded)
                 {
-                    //add to user profile
-                    UserProfile profile = new UserProfile();
+                    UserProfile profile = new();
                     profile.ApplicationUserId = superAdmin.Id;
-                    profile.PasswordHash = superAdmin.PasswordHash;
-                    profile.ConfirmPassword = superAdmin.PasswordHash;
-
                     profile.FirstName = "Super";
                     profile.LastName = "Admin";
                     profile.PhoneNumber = "+8801674411603";
@@ -286,6 +317,19 @@ namespace AMS.Services
                     profile.Address = "R/A, Dhaka";
                     profile.Country = "Bangladesh";
                     profile.ProfilePicture = "/images/UserIcon/Admin.png";
+
+                    profile.RoleId = 1;
+                    profile.IsApprover = 1;
+                    profile.EmployeeId = StaticData.RandomDigits(6);
+                    profile.DateOfBirth = DateTime.Now.AddYears(-25);
+                    profile.Designation = 1;
+                    profile.Department = 1;
+                    profile.SubDepartment = 1;
+                    profile.JoiningDate = DateTime.Now.AddYears(-1);
+                    profile.LeavingDate = DateTime.Now;
+                    profile.Designation = 2;
+                    profile.Department = 2;
+                    profile.SubDepartment = 2;
 
                     profile.CreatedDate = DateTime.Now;
                     profile.ModifiedDate = DateTime.Now;
@@ -295,7 +339,7 @@ namespace AMS.Services
                     await _context.UserProfile.AddAsync(profile);
                     await _context.SaveChangesAsync();
 
-                    await _roles.AddToRoles(superAdmin.Id);
+                    await _roles.AddToRoles(superAdmin);
                 }
             }
             catch (Exception)
@@ -310,6 +354,15 @@ namespace AMS.Services
 
             foreach (var item in _GetUserProfileList)
             {
+                item.RoleId = 2;
+                item.IsApprover = 1;
+                item.EmployeeId = StaticData.RandomDigits(6);
+                item.DateOfBirth = DateTime.Now.AddYears(-25);
+                item.Designation = 1;
+                item.Department = 1;
+                item.SubDepartment = 1;
+                item.JoiningDate = DateTime.Now.AddYears(-1);
+                item.LeavingDate = DateTime.Now;
                 var _ApplicationUser = await _iAccount.CreateUserProfile(item, "Admin");
             }
         }

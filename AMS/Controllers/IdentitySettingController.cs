@@ -34,7 +34,7 @@ namespace AMS.Controllers
             _accessor = accessor;
         }
 
-        [Authorize(Roles = Pages.MainMenu.IdentitySetting.RoleName)]
+        [Authorize(Roles = Pages.RoleViewModel.IdentitySetting)]
         [HttpGet]
         public async Task<IActionResult> Index()
         {

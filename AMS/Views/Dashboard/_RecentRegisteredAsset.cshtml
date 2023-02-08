@@ -10,15 +10,15 @@
         <table class="CustomBlueTable" id="tblAsset">
             <thead>
                 <tr>
-                    <th>Identificador Unico</th>
-                    <th>Imagen</th>
-                    <th>Numero Serie</th>
-                    <th>Modelo</th>
-                    <th>Nombre</th>
-                    <th>Persona Responsable</th>
-                    <th>Precio Unitario</th>
-                    <th>Fecha de Registro</th>
-                    <th>Fecha Llegada</th>
+                    <th>Id</th>
+                    <th>Image</th>
+                    <th>Asset Id</th>
+                    <th>Asset Model No</th>
+                    <th>Name</th>
+                    <th>Assign Employee</th>
+                    <th>Unit Price</th>
+                    <th>Date Of Purchase</th>
+                    <th>Date Of Manufacture</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,12 +28,11 @@
                         <tr>
                             <td>@item.Id</td>
                             <td>
-                                <div class="image">
-                                    <img src="@item.ImageURL" class="imgCustom100px elevation-2" alt="Asset Image">
-                                </div>
                                 <div class="info">
-                                    <a href="#" class="d-block" onclick="ViewImage('@item.ImageURL', '@item.Name')">
-                                        @item.Name
+                                    <a href="#" class="d-block" onclick="ViewImage('@item.ImageURL', '@item.Name')">                                       
+                                        <div class="image">
+                                            <img src="@item.ImageURL" class="imgCustom100px elevation-2" alt="Asset Image">
+                                        </div>
                                     </a>
                                 </div>
                             </td>

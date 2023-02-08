@@ -26,7 +26,11 @@
         },
 
         "columns": [
-            { "data": "UserProfileId", "name": "UserProfileId" },
+            {
+                data: "UserProfileId", "name": "UserProfileId", render: function (data, type, row) {
+                    return "<a href='#' class='fa fa-eye' onclick=ViewUserDetails('" + row.UserProfileId + "');>" + row.UserProfileId + "</a>";
+                }
+            },
             {
                 data: null, render: function (data, type, row) {
                     return "<a href='#' class='d-block' onclick=ViewImage('" + row.ProfilePicture + "','User_Image');><div class='image'><img src='" + row.ProfilePicture + "' class='img-circle elevation-2' alt='Asset Image'></div></a>";
@@ -50,23 +54,31 @@
                     return (month.length > 1 ? month : month) + "/" + date.getDate() + "/" + date.getFullYear();
                 }
             },
-
+            {
+                data: "UserProfileId", "name": "UserProfileId", render: function (data, type, row) {
+                    return "<a href='#' class='fa fa-plus' onclick=AllocateAsset('" + row.UserProfileId + "');>Allocate</a>";
+                },
+                Width: "50px",
+            },
             {
                 data: null, render: function (data, type, row) {
-                    return "<select id='" + row.UserProfileId + "' onchange=funAction('" + row.UserProfileId + "'); class='btn-sm' style='width: 80px;'>" +
+                    return "<select id='" + row.UserProfileId + "' onchange=funAction('" + row.UserProfileId + "'); class='btn-sm' style='width: 70px;'>" +
                         "<option value='0'></option>" +
-                        "<option value='1'>Edit</option>" +
-                        "<option value='2'>Reset Password</option>" +
-                        "<option value='3'>Manage Page Access</option>" +
-                        "<option value='4'>Delete</option>" +
+                        "<option value='1'>Allocate Asset</option>" +
+                        "<option value='2'>Edit</option>" +
+                        "<option value='3'>Reset Password</option>" +
+                        "<option value='4'>Manage Page Access</option>" +
+                        "<option value='5'>Delete</option>" +
                         "</select>";
-                }
+                },
+                autoWidth: false,
+                Width: "50px",
             },
         ],
 
         'columnDefs': [
             {
-                'targets': [1, 7],
+                'targets': [1, 7, 8],
                 'orderable': false,
             },
             {

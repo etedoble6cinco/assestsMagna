@@ -66,13 +66,23 @@ $(document).ready(function () {
                 }
             },
             {
-                data: null, render: function (data, type, row) {
-                    return "<a href='#' class='btn btn-info btn-xs' onclick=AddEdit('" + row.Id + "');>Edit</a>";
+                data: null, render: function (data, type, row) {                 
+                    if (row.IsAdmin) {
+                        return "<a href='#' class='btn btn-info btn-xs' onclick=AddEdit('" + row.Id + "');>Edit</a>";
+                    }
+                    else {
+                        return "-";
+                    }
                 }
             },
             {
-                data: null, render: function (data, type, row) {
-                    return "<a href='#' class='btn btn-danger btn-xs' onclick=Delete('" + row.Id + "'); >Delete</a>";
+                data: null, render: function (data, type, row) {                   
+                    if (row.IsAdmin) {
+                        return "<a href='#' class='btn btn-danger btn-xs' onclick=Delete('" + row.Id + "'); >Delete</a>";
+                    }
+                    else {
+                        return "-";
+                    }
                 }
             }
         ],

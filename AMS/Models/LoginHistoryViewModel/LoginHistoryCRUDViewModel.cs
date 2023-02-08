@@ -5,7 +5,7 @@ namespace AMS.Models.LoginHistoryViewModel
 {
     public class LoginHistoryCRUDViewModel : EntityBase
     {
-        [Display(Name = "Identificador Unico")]
+        [Display(Name = "SL")]
         [Required]
         public Int64 Id { get; set; }
         public string UserName { get; set; }
@@ -16,7 +16,7 @@ namespace AMS.Models.LoginHistoryViewModel
         public string Latitude { get; set; }
         public string Longitude { get; set; }
         public string Browser { get; set; }
-        [Display(Name = "Sistema Operativo")]
+        [Display(Name = "Operating System")]
         public string OperatingSystem { get; set; }
         public string Device { get; set; }
         public string Action { get; set; }

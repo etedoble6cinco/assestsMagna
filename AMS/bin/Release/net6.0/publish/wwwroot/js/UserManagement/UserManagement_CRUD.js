@@ -1,12 +1,15 @@
 ﻿var funAction = function (UserProfileId) {
     var _Action = $("#" + UserProfileId).val();
+
     if (_Action == 1)
+        AllocateAsset(UserProfileId);
+    if (_Action == 2)
         AddEditUserAccount(UserProfileId);
-    else if (_Action == 2)
-        ResetPasswordAdmin(UserProfileId);
     else if (_Action == 3)
-        ManagePageAccessAdmin(UserProfileId);
+        ResetPasswordAdmin(UserProfileId);
     else if (_Action == 4)
+        UpdateUserRole(UserProfileId);
+    else if (_Action == 5)
         DeleteUserAccount(UserProfileId);
     $("#" + UserProfileId).prop('selectedIndex', 0);
 };
@@ -17,90 +20,11 @@ var ViewUserDetails = function (Id) {
     loadBigModal(url);
 };
 
-var ManagePageAccessAdmin = function (id) {
-    $('#titleBigModal').html("<h4>Manage Page Access</h4>");
-    var url = "/UserRole/ManageRoleAdmin?id=" + id;
-    loadBigModal(url);
-};
-
-var ManagePageAccessGeneral = function (id) {
-    $('#titleBigModal').html("<h4>Manage Page Access</h4>");
-    var url = "/UserRole/ManageRoleGeneral?_ApplicationUserId=" + id;
-    loadBigModal(url);
-};
-
-var UpdateRole = function () {
-    $("#btnUpdateRole").val("Please Wait");
-    $('#btnUpdateRole').attr('disabled', 'disabled');
-
-    var _frmManageRole = $("#frmManageRole").serialize();
-    $.ajax({
-        type: "POST",
-        url: "/UserRole/UpdateRole",
-        data: _frmManageRole,
-        success: function (result) {
-            $("#btnUpdateRole").val("Save");
-            $('#btnUpdateRole').removeAttr('disabled');
-
-            Swal.fire({
-                title: result.AlertMessage,
-                icon: "success"
-            }).then(function () {
-                document.getElementById("btnClose").click();
-                if (result.CurrentURL == "/UserRole/Index") {
-                    setTimeout(function () {
-                        $("#tblUserRole").load("/UserRole/Index #tblUserRole");
-                    }, 1000);
-                }
-            });
-        },
-        error: function (errormessage) {
-            SwalSimpleAlert(errormessage.responseText, "warning");
-        }
-    });
-}
-
-
 var ResetPasswordAdmin = function (id) {
     $('#titleMediumModal').html("<h4>Reset Password</h4>");
     var url = "/UserManagement/ResetPasswordAdmin?id=" + id;
     loadMediumModal(url);
 };
-
-var ResetPasswordGeneral = function (ApplicationUserId) {
-    $('#titleMediumModal').html("<h4>Reset Password</h4>");
-    var url = "/UserProfile/ResetPasswordGeneral?ApplicationUserId=" + ApplicationUserId;
-    loadMediumModal(url);
-};
-
-var DeleteUserAccount = function (id) {
-    Swal.fire({
-        title: 'Do you want to delete this user?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes'
-    }).then((result) => {
-        if (result.value) {
-            $.ajax({
-                type: "DELETE",
-                url: "/UserManagement/DeleteUserAccount?id=" + id,
-                success: function (result) {
-                    var message = "User has been deleted successfully. User Id: " + result.Email;
-                    Swal.fire({
-                        title: message,
-                        icon: 'info',
-                        onAfterClose: () => {
-                            $('#tblUserAccount').DataTable().ajax.reload();
-                        }
-                    });
-                }
-            });
-        }
-    });
-};
-
 
 var AddEditUserAccount = function (id) {
     var url = "/UserManagement/AddEditUserAccount?id=" + id;
@@ -118,8 +42,6 @@ var AddEditUserAccount = function (id) {
 };
 
 var SaveUser = function () {
-    $('#ProfilePictureDetails').removeAttr('required');
-    console.log($("#ProfilePictureDetails").val());
     if (!$("#ApplicationUserForm").valid()) {
         return;
     }
@@ -155,7 +77,7 @@ var SaveUser = function () {
         contentType: false,
         success: function (result) {
             $('#btnSave').prop('disabled', false);
-            $("#btnAddProfile").prop('value', 'Save');
+            $("#btnSave").prop('value', 'Save');
             if (result.IsSuccess) {
                 Swal.fire({
                     title: result.AlertMessage,
@@ -180,7 +102,6 @@ var SaveUser = function () {
                     title: result.AlertMessage,
                     icon: "warning"
                 }).then(function () {
-                    $("#btnSave").prop('value', 'Save');
                     setTimeout(function () {
                         $('#Email').focus();
                     }, 400);
@@ -193,6 +114,80 @@ var SaveUser = function () {
     });
 }
 
+var DeleteUserAccount = function (id) {
+    Swal.fire({
+        title: 'Do you want to delete this user?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+    }).then((result) => {
+        if (result.value) {
+            $.ajax({
+                type: "DELETE",
+                url: "/UserManagement/DeleteUserAccount?id=" + id,
+                success: function (result) {
+                    var message = "User has been deleted successfully. User Id: " + result.Email;
+                    Swal.fire({
+                        title: message,
+                        icon: 'info',
+                        onAfterClose: () => {
+                            $('#tblUserAccount').DataTable().ajax.reload();
+                        }
+                    });
+                }
+            });
+        }
+    });
+};
+
+var UpdateUserRole = function (id) {
+    $('#titleExtraBigModal').html("<h4>Manage Page Access</h4>");
+    var url = "/ManageUserRoles/UpdateUserRole?id=" + id;
+    loadExtraBigModal(url);
+};
+
+var SaveUpdateUserRole = function () {
+    $("#btnUpdateRole").val("Please Wait");
+    $('#btnUpdateRole').attr('disabled', 'disabled');
+
+    var _frmManageRole = $("#frmManageRole").serialize();
+    $.ajax({
+        type: "POST",
+        url: "/ManageUserRoles/SaveUpdateUserRole",
+        data: _frmManageRole,
+        success: function (result) {
+            $("#btnUpdateRole").val("Save");
+            $('#btnUpdateRole').removeAttr('disabled');
+            if (result.IsSuccess) {
+                Swal.fire({
+                    title: result.AlertMessage,
+                    icon: "success"
+                }).then(function () {
+                    document.getElementById("btnClose").click();
+                    $('#tblUserAccount').DataTable().ajax.reload();
+                });
+            }
+            else {
+                Swal.fire({
+                    title: result.AlertMessage,
+                    icon: "warning"
+                }).then(function () {
+                });
+            }
+        },
+        error: function (errormessage) {
+            SwalSimpleAlert(errormessage.responseText, "warning");
+        }
+    });
+}
+
+var AllocateAsset = function (id) {
+    var url = "/Asset/AllocateAsset?id=" + id;
+    $('#titleExtraBigModal').html("Allocate Asset");
+    loadExtraBigModal(url);
+};
 
 var PreparedFormObj = function () {
     var _FormData = new FormData()
@@ -203,13 +198,24 @@ var PreparedFormObj = function () {
 
     _FormData.append('FirstName', $("#FirstName").val())
     _FormData.append('LastName', $("#LastName").val())
+    _FormData.append('EmployeeTypeId', $("#EmployeeTypeId").val())
     _FormData.append('PhoneNumber', $("#PhoneNumber").val())
     _FormData.append('Email', $("#Email").val())
     _FormData.append('PasswordHash', $("#PasswordHash").val())
-
     _FormData.append('ConfirmPassword', $("#ConfirmPassword").val())
     _FormData.append('Address', $("#Address").val())
     _FormData.append('Country', $("#Country").val())
+    _FormData.append('RoleId', $("#RoleId").val())
+    _FormData.append('IsApprover', $("#IsApprover").val())
+
+    _FormData.append('EmployeeId', $("#EmployeeId").val())
+    _FormData.append('DateOfBirth', $("#DateOfBirth").val())
+    _FormData.append('Designation', $("#Designation").val())
+    _FormData.append('Department', $("#Department").val())
+    _FormData.append('SubDepartment', $("#SubDepartment").val())
+    _FormData.append('JoiningDate', $("#JoiningDate").val())
+    _FormData.append('LeavingDate', $("#LeavingDate").val())
+
     _FormData.append('CurrentURL', $("#CurrentURL").val())
     return _FormData;
 }

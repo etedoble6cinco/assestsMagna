@@ -42,7 +42,6 @@
           "Microsoft.EntityFrameworkCore.SqlServer": "6.0.8",
           "Microsoft.EntityFrameworkCore.Tools": "6.0.8",
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": "6.0.8",
-          "Net.Codecrete.QrCodeGenerator": "2.0.3",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "6.0.6",
           "Pomelo.EntityFrameworkCore.MySql": "6.0.2",
           "SendGrid": "9.28.0",
@@ -1852,17 +1851,6 @@
         },
         "compile": {
           "lib/net6.0/MySqlConnector.dll": {}
-        }
-      },
-      "Net.Codecrete.QrCodeGenerator/2.0.3": {
-        "runtime": {
-          "lib/netstandard2.0/QrCodeGenerator.dll": {
-            "assemblyVersion": "1.6.0.0",
-            "fileVersion": "2.0.3.0"
-          }
-        },
-        "compile": {
-          "lib/netstandard2.0/QrCodeGenerator.dll": {}
         }
       },
       "NETStandard.Library/1.6.1": {
@@ -5405,13 +5393,6 @@
       "sha512": "sha512-JVokQTUNN3WHAu9Vw8ieeq1dXTFokJiig5P0VJ4f439UxRrsPo6SaVWC8Zdm6mkPeQFhZ0/9afdWa02EY/1j/w==",
       "path": "mysqlconnector/2.1.2",
       "hashPath": "mysqlconnector.2.1.2.nupkg.sha512"
-    },
-    "Net.Codecrete.QrCodeGenerator/2.0.3": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-BeqKvqzObTJWAs+Fk+LH5jOdISZObzlks/qPBbxEp12fUYn7Kv6OiGg7gynO4SHSgVhXbOqc+k2VZnInhQOeoA==",
-      "path": "net.codecrete.qrcodegenerator/2.0.3",
-      "hashPath": "net.codecrete.qrcodegenerator.2.0.3.nupkg.sha512"
     },
     "NETStandard.Library/1.6.1": {
       "type": "package",

@@ -5,9 +5,9 @@ namespace AMS.Models.DepartmentViewModel
 {
     public class DepartmentCRUDViewModel : EntityBase
     {
-        [Display(Name = "SL")]
-        [Required]
+        [Display(Name = "SL"), Required]
         public Int64 Id { get; set; }
+        [Required]
         public string Name { get; set; }
         public string Description { get; set; }
 

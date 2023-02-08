@@ -5,11 +5,12 @@ namespace AMS.Models.AssetHistoryViewModel
 {
     public class AssetHistoryCRUDViewModel : EntityBase
     {
-        [Display(Name = "Identificador Unico")]
+        [Display(Name = "SL")]
         [Required]
         public Int64 Id { get; set; }
         public Int64 AssetId { get; set; }
-        public Int64? AssignEmployeeId { get; set; }
+        public string AssetDisplay { get; set; }
+        public Int64 AssignEmployeeId { get; set; }
         public string AssignEmployeeDisplay { get; set; }
         public string Action { get; set; }
         public string Note { get; set; }

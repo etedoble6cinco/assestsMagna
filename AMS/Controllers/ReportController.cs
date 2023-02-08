@@ -23,7 +23,7 @@ namespace AMS.Controllers
             _iCommon = iCommon;
         }
 
-        [Authorize(Roles = MainMenu.AssetStatusReport.RoleName)]
+        [Authorize(Roles = RoleViewModel.AssetStatusReport)]
         [HttpGet]
         public IActionResult AssetStatusReport()
         {
@@ -43,17 +43,27 @@ namespace AMS.Controllers
             return View("AssetStatusReport", vm);
         }
 
-        [Authorize(Roles = MainMenu.PrintBarcode.RoleName)]
+        [Authorize(Roles = RoleViewModel.PrintBarcode)]
         [HttpGet]
         public IActionResult PrintBarcode()
         {
-            BarcodeViewModel _BarcodeViewModel = new BarcodeViewModel();
+            ScannerCodeViewModel _BarcodeViewModel = new();
             var result = _iCommon.GetBarcodeList().ToList();
             
-            _BarcodeViewModel.listBarcodeViewModel = result.Where(f => f.Id % 2 != 0).ToList();
-            _BarcodeViewModel.sublistBarcodeViewModel = result.Where(f => f.Id % 2 == 0).ToList();
+            _BarcodeViewModel.listScannerCodeViewModel = result.Where(f => f.Id % 2 != 0).ToList();
+            _BarcodeViewModel.sublistScannerCodeViewModel = result.Where(f => f.Id % 2 == 0).ToList();
 
             return View(_BarcodeViewModel);
+        }
+        [Authorize(Roles = RoleViewModel.PrintQRcode)]
+        [HttpGet]
+        public IActionResult PrintQRcode()
+        {
+            ScannerCodeViewModel vm = new();
+            var result = _iCommon.GetQRcodeList().ToList();
+            vm.listScannerCodeViewModel = result.Where(f => f.Id % 2 != 0).ToList();
+            vm.sublistScannerCodeViewModel = result.Where(f => f.Id % 2 == 0).ToList();
+            return View(vm);
         }
 
 
@@ -94,7 +104,7 @@ namespace AMS.Controllers
             return _vm;
         }
 
-        [Authorize(Roles = MainMenu.AssetAllocationReport.RoleName)]
+        [Authorize(Roles = RoleViewModel.AssetAllocationReport)]
         [HttpGet]
         public IActionResult AssetAllocationReport()
         {
@@ -143,7 +153,7 @@ namespace AMS.Controllers
             }).ToList();
 
             var result = (from _AssetGroupBy in AssetGroupBy
-                          join _Employee in _context.Employee on _AssetGroupBy.EmployeeId equals _Employee.Id
+                          join _Employee in _context.UserProfile on _AssetGroupBy.EmployeeId equals _Employee.UserProfileId
                           select new AllocationViewModel
                           {
                               EmployeeId = _AssetGroupBy.EmployeeId,

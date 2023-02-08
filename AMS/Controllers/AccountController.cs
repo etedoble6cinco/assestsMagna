@@ -1,12 +1,17 @@
 ﻿using AMS.Data;
+using AMS.Helpers;
 using AMS.Models;
 using AMS.Models.AccountViewModels;
 using AMS.Models.CommonViewModel;
+using AMS.Models.UserProfileViewModel;
 using AMS.Services;
+using LeaveMGS.Helpers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using UAParser;
 
@@ -22,6 +27,8 @@ namespace AMS.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
         private readonly ICommon _iCommon;
+        private readonly IRoles _roles;
+        private readonly IConfiguration _configuration;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -30,7 +37,8 @@ namespace AMS.Controllers
             IEmailSender emailSender,
             ILogger<AccountController> logger,
             ICommon iCommon,
-            IFunctional iFunctional)
+            IRoles roles,
+            IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -38,6 +46,8 @@ namespace AMS.Controllers
             _emailSender = emailSender;
             _logger = logger;
             _iCommon = iCommon;
+            _roles = roles;
+            _configuration = configuration;
         }
 
         [TempData]
@@ -47,13 +57,10 @@ namespace AMS.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login(string returnUrl = null)
         {
-            // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-
             ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
-
         [HttpPost]
         [AllowAnonymous]
         public async Task<JsonResult> Login(LoginViewModel model, string returnUrl = null)
@@ -69,6 +76,7 @@ namespace AMS.Controllers
                 string _AlertMessage = "User logged in.";
                 if (result.Succeeded)
                 {
+                    //await JWTHandle(model);
                     HttpContext.Session.SetString("LoginUserName", model.Email);
                     _logger.LogInformation(_AlertMessage);
 
@@ -93,22 +101,48 @@ namespace AMS.Controllers
                 throw;
             }
         }
+
+        private async Task JWTHandle(LoginViewModel model)
+        {
+            try
+            {
+                var user = await _userManager.FindByNameAsync(model.Email);
+                var userRoles = await _userManager.GetRolesAsync(user);
+                var authClaims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                };
+
+                foreach (var userRole in userRoles)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+                }
+                var token = AddJWTOptions.GetToken(authClaims, _configuration);
+
+                /*
+                return Ok(new
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(token),
+                    expiration = token.ValidTo
+                });
+                */
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> SaveUserInfoFromBrowser(UserInfoFromBrowser _UserInfoFromBrowser)
         {
-            try
-            {
-                _UserInfoFromBrowser.CreatedDate = DateTime.Now;
-                _UserInfoFromBrowser.ModifiedDate = DateTime.Now;
-                _context.Add(_UserInfoFromBrowser);
-                var result = await _context.SaveChangesAsync();
-                return new JsonResult(_UserInfoFromBrowser);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            _UserInfoFromBrowser.CreatedDate = DateTime.Now;
+            _UserInfoFromBrowser.ModifiedDate = DateTime.Now;
+            _context.Add(_UserInfoFromBrowser);
+            var result = await _context.SaveChangesAsync();
+            return new JsonResult(_UserInfoFromBrowser);
         }
 
         [HttpGet]
@@ -238,11 +272,10 @@ namespace AMS.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            ViewData["ReturnUrl"] = returnUrl;
-            if (ModelState.IsValid)
+            JsonResultViewModel _JsonResultViewModel = new JsonResultViewModel();
+            try
             {
                 var _ApplicationUser = new ApplicationUser
                 {
@@ -267,9 +300,6 @@ namespace AMS.Controllers
                         Email = model.Email,
                         Address = model.Address,
                         Country = model.Country,
-
-                        PasswordHash = _ApplicationUser.PasswordHash,
-                        ConfirmPassword = _ApplicationUser.PasswordHash,
                         ApplicationUserId = _ApplicationUser.Id,
 
                         CreatedDate = DateTime.Now,
@@ -278,12 +308,16 @@ namespace AMS.Controllers
                         ModifiedBy = HttpContext.User.Identity.Name
                     };
                     var result2 = await _context.UserProfile.AddAsync(_UserProfile);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     _logger.LogInformation("User created a new account with password.");
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(_ApplicationUser);
-                    var callbackUrl = Url.EmailConfirmationLink(_ApplicationUser.Id, code, Request.Scheme);
-                    await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
 
+                    var _DefaultIdentityOptions = await _context.DefaultIdentityOptions.FirstOrDefaultAsync(m => m.Id == 1);
+                    if (_DefaultIdentityOptions.SignInRequireConfirmedEmail)
+                    {
+                        var _ConfirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(_ApplicationUser);
+                        var callbackUrl = Url.EmailConfirmationLink(_ApplicationUser.Id, _ConfirmationToken, Request.Scheme);
+                        await _emailSender.SendEmailConfirmationAsync(_ApplicationUser.Email, callbackUrl);
+                    }
                     await _signInManager.SignInAsync(_ApplicationUser, isPersistent: false);
                     LoginViewModel _LoginViewModel = new LoginViewModel
                     {
@@ -291,23 +325,41 @@ namespace AMS.Controllers
                         Latitude = model.Latitude,
                         Longitude = model.Longitude
                     };
-                    InserLoginHistory(true, true, _LoginViewModel);
+                    await InserLoginHistory(true, true, _LoginViewModel);
                     _logger.LogInformation("User created a new account with password.");
-                    return RedirectToLocal(returnUrl);
+                    _JsonResultViewModel.AlertMessage = "User Created Successfully. User Name: " + _ApplicationUser.Email;
+                    _JsonResultViewModel.IsSuccess = true;
+                    return new JsonResult(_JsonResultViewModel);
                 }
-                AddErrors(result);
+                else
+                {
+                    string errorMessage = string.Empty;
+                    foreach (var item in result.Errors)
+                    {
+                        errorMessage = errorMessage + item.Description;
+                    }
+                    _JsonResultViewModel.AlertMessage = "User Creation Failed." + errorMessage;
+                    _JsonResultViewModel.IsSuccess = false;
+                    return new JsonResult(_JsonResultViewModel);
+                }
             }
-            return View(model);
+            catch (Exception ex)
+            {
+                _JsonResultViewModel.IsSuccess = false;
+                _JsonResultViewModel.AlertMessage = ex.Message;
+                return new JsonResult(_JsonResultViewModel);
+                throw;
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Logout(LoginViewModel _LoginViewModel)
+        public async Task<IActionResult> Logout(LoginViewModel vm)
         {
-            await InserLoginHistory(false, true, _LoginViewModel);
             await _signInManager.SignOutAsync();
+            await InserLoginHistory(false, true, vm);
             _logger.LogInformation("User logged out.");
-            return RedirectToAction(nameof(DashboardController.Index), "Dashboard");
+            return RedirectToAction(nameof(AccountController.Login), "Account");
         }
 
         [HttpPost]
@@ -415,29 +467,35 @@ namespace AMS.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
+                JsonResultViewModel _JsonResultViewModel = new();
                 var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+                if (user == null)
                 {
-                    // Don't reveal that the user does not exist or is not confirmed
-                    return RedirectToAction(nameof(ForgotPasswordConfirmation));
+                    //return RedirectToAction(nameof(ForgotPasswordConfirmation));
+                    _JsonResultViewModel.AlertMessage = "User not found with this email: " + model.Email;
+                    _JsonResultViewModel.IsSuccess = false;
+                    return new JsonResult(_JsonResultViewModel);
                 }
-
-                // For more information on how to enable account confirmation and password reset please
-                // visit https://go.microsoft.com/fwlink/?LinkID=532713
+                else if (!(await _userManager.IsEmailConfirmedAsync(user)))
+                {
+                    _JsonResultViewModel.AlertMessage = "User email is not confirmed yet. Please confirm email first. Email: " + model.Email;
+                    _JsonResultViewModel.IsSuccess = false;
+                    return new JsonResult(_JsonResultViewModel);
+                }
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var callbackUrl = Url.ResetPasswordCallbackLink(user.Id, code, Request.Scheme);
-                var result = await _emailSender.SendEmailAsync(model.Email, "Reset Password",
-                   $"Please reset your password by clicking here: <a href='{callbackUrl}'>link</a>");
-                return RedirectToAction(nameof(ForgotPasswordConfirmation));
-            }
 
-            // If we got this far, something failed, redisplay form
-            return View(model);
+                await _emailSender.SendEmailForgotPasswordAsync(model.Email, callbackUrl);
+
+                _JsonResultViewModel.AlertMessage = "Success, . Email: " + model.Email;
+                _JsonResultViewModel.IsSuccess = true;
+                return new JsonResult(_JsonResultViewModel);
+            }
+            return new JsonResult(model);
         }
 
         [HttpGet]
@@ -461,26 +519,38 @@ namespace AMS.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
-            if (!ModelState.IsValid)
+            JsonResultViewModel _JsonResultViewModel = new();
+            try
             {
-                return View(model);
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user == null)
+                {
+                    _JsonResultViewModel.AlertMessage = "Incorrect information.";
+                    _JsonResultViewModel.IsSuccess = false;
+                    return new JsonResult(_JsonResultViewModel);
+                }
+                var result = await _userManager.ResetPasswordAsync(user, model.Code, model.NewPassword);
+                if (result.Succeeded)
+                {
+                    _JsonResultViewModel.AlertMessage = "Success. Email: " + model.Email;
+                    _JsonResultViewModel.IsSuccess = true;
+                    return new JsonResult(_JsonResultViewModel);
+                }
+                else
+                {
+                    _JsonResultViewModel.AlertMessage = "Reset Password Failed. Email: " + model.Email;
+                    _JsonResultViewModel.IsSuccess = false;
+                    return new JsonResult(_JsonResultViewModel);
+                }
             }
-            var user = await _userManager.FindByEmailAsync(model.Email);
-            if (user == null)
+            catch (Exception ex)
             {
-                // Don't reveal that the user does not exist
-                return RedirectToAction(nameof(ResetPasswordConfirmation));
+                _JsonResultViewModel.IsSuccess = false;
+                return new JsonResult(ex.Message);
+                throw;
             }
-            var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
-            if (result.Succeeded)
-            {
-                return RedirectToAction(nameof(ResetPasswordConfirmation));
-            }
-            AddErrors(result);
-            return View();
         }
 
         [HttpGet]

@@ -22,7 +22,7 @@ namespace AMS.Controllers
             _iCommon = iCommon;
         }
 
-        [Authorize(Roles = Pages.MainMenu.Supplier.RoleName)]
+        [Authorize(Roles = Pages.RoleViewModel.Supplier)]
         [HttpGet]
         public IActionResult Index()
         {

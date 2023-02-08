@@ -1,41 +1,16 @@
-<div class="wrapper">
-    <div class="panel panel-hash">
-        <div class="panel-heading">
-            <div class="row">
-                <div class="col-md-5">
-                    <a class="fa fa-plus-square fa-2x" onclick="AddEdit(0)"></a>
-                </div>
-                <div class="col-md-7 pull-right">
-                    <h5 class="pull-right"><b>&nbsp;Lista de Activos</b></h5>
-                </div>
-            </div>
-        </div>
+@{
+    var _IsInRole = User.IsInRole("Admin");
+    if (_IsInRole)
+    {
+        <partial name="_IndexAdmin" />
+    }
+    else
+    {
+        <partial name="_IndexGeneral" />
+    }
+}
 
-        <div class="panel-body scroll panel-height">
-            <table id="tblAsset" class="CustomBlueTable" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>Identificador Unico</th>
-                        <th>Imagen</th>
-                        <th>Numero Serie</th>
-                        <th>Modelo</th>
-                        <th>Nombre</th>
-                        <th>Persona Responsable</th>
-                        <th>Precio</th>
-                        <th>Fecha de Llegada</th>
-
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
-    </div>
-</div>
-
-
+<script src="~/js/Asset/Asset_CRUD.js"></script>
 <style>
     .panel-heading {
         padding: 0px 0px 0px 5px;
@@ -50,7 +25,8 @@
         margin-bottom: 1px;
     }
 </style>
-
-
-<script src="~/js/Asset/Asset_CRUD.js"></script>
-<script src="~/js/Asset/Asset_Datatable.js"></script>
+<script>
+    $(document).ready(function () {
+        DataTableCustomSearchBox('450px', 'Search Asset');
+    });
+</script>

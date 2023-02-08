@@ -79,7 +79,7 @@ var AddUnitsofMeasure = function (id) {
 
 var SearchInHTMLTable = function () {
     var input, filter, table, tr, td, i, txtValue;
-    input = document.getElementById("myInput");
+    input = document.getElementById("inputRoleSearch");
     filter = input.value.toUpperCase();
     table = document.getElementById("myTable");
     tr = table.getElementsByTagName("tr");
@@ -98,7 +98,7 @@ var SearchInHTMLTable = function () {
 
 var SearchByInHTMLTable = function (TableName) {
     var input, filter, table, tr, td, i, txtValue;
-    input = document.getElementById("myInput");
+    input = document.getElementById("inputRoleSearch");
     filter = input.value.toUpperCase();
 
     tr = TableName.getElementsByTagName("tr");
@@ -196,4 +196,10 @@ var printBarcodeDivThurmal = function (Barcode) {
     $("#imgSingleBarcode").attr("src", '');
     document.getElementById("imgSingleBarcode").classList.remove('imgCustomThurmal');
 }
+
+var DataTableCustomSearchBox = function (width, placeholder) {
+    $('.dataTables_filter input[type="search"]').
+        attr('placeholder', placeholder).
+        css({ 'width': width, 'display': 'inline-block' });
+};
 

@@ -1,6 +1,6 @@
 ﻿using AMS.Helpers;
 using AMS.Models;
-using AMS.Models.UserAccountViewModel;
+using AMS.Models.UserProfileViewModel;
 
 namespace AMS.Data
 {
@@ -13,13 +13,13 @@ namespace AMS.Data
                 new Asset { AssetModelNo = "HPLaptop101", Name = "HP Laptop 101", UnitPrice = 2500, DateOfPurchase = DateTime.Now, DateOfManufacture = DateTime.Now.AddMonths(-7), ImageURL = "/images/DefaultAsset/HP_Laptop.jpg", AssetStatus = AssetStatusValue.New, Category = 1 },
                 new Asset { AssetModelNo = "HPLaptop102", Name = "HP Laptop 102", UnitPrice = 2500, DateOfPurchase = DateTime.Now, DateOfManufacture = DateTime.Now.AddMonths(-7), ImageURL = "/images/DefaultAsset/HP_Laptop.jpg", AssetStatus = AssetStatusValue.New, Category = 1 },
                 new Asset { AssetModelNo = "HPLaptop103", Name = "HP Laptop 103", UnitPrice = 2500, DateOfPurchase = DateTime.Now, DateOfManufacture = DateTime.Now.AddMonths(-7), ImageURL = "/images/DefaultAsset/HP_Laptop.jpg", AssetStatus = AssetStatusValue.New, Category = 1 },
-                new Asset { AssetModelNo = "HPLaptop104", Name = "HP Laptop 104", UnitPrice = 2500, DateOfPurchase = DateTime.Now, DateOfManufacture = DateTime.Now.AddMonths(-7), ImageURL = "/images/DefaultAsset/HP_Laptop.jpg", AssetStatus = AssetStatusValue.InUse, Category = 1 },
-                new Asset { AssetModelNo = "HPLaptop105", Name = "HP Laptop 105", UnitPrice = 2500, DateOfPurchase = DateTime.Now, DateOfManufacture = DateTime.Now.AddMonths(-7), ImageURL = "/images/DefaultAsset/HP_Laptop.jpg", AssetStatus = AssetStatusValue.InUse, Category = 1 },
+                new Asset { AssetModelNo = "HPLaptop104", Name = "HP Laptop 104", UnitPrice = 2500, DateOfPurchase = DateTime.Now, DateOfManufacture = DateTime.Now.AddMonths(-7), ImageURL = "/images/DefaultAsset/HP_Laptop.jpg", AssetStatus = AssetStatusValue.Available, Category = 1 },
+                new Asset { AssetModelNo = "HPLaptop105", Name = "HP Laptop 105", UnitPrice = 2500, DateOfPurchase = DateTime.Now, DateOfManufacture = DateTime.Now.AddMonths(-7), ImageURL = "/images/DefaultAsset/HP_Laptop.jpg", AssetStatus = AssetStatusValue.Available, Category = 1 },
                 
                 new Asset { AssetModelNo = "M1 Chip", Name = "Macbook Pro m1", UnitPrice = 2500, DateOfPurchase = DateTime.Now, DateOfManufacture = DateTime.Now.AddMonths(-6), ImageURL = "/images/DefaultAsset/Macbook_Pro_m1.jpg", AssetStatus = AssetStatusValue.New, Category = 1 },
                 new Asset { AssetModelNo = "HP123", Name = "HP Laptop", UnitPrice = 900, DateOfPurchase = DateTime.Now, DateOfManufacture = DateTime.Now.AddMonths(-12), ImageURL = "/images/DefaultAsset/HP_Pavilion_13.jpg", AssetStatus = AssetStatusValue.New, Category = 1 },
-                new Asset { AssetModelNo = "Samsung123", Name = "Samsung Curved Monitor", UnitPrice = 1200, DateOfPurchase = DateTime.Now, DateOfManufacture = DateTime.Now.AddMonths(-5), ImageURL = "/images/DefaultAsset/Samsung_Curved_Monitor.jpg", AssetStatus = AssetStatusValue.InUse, Category = 1 },
-                new Asset { AssetModelNo = "WD123", Name = "WD Portable HD", UnitPrice = 800, DateOfPurchase = DateTime.Now, DateOfManufacture = DateTime.Now.AddMonths(-2), ImageURL = "/images/DefaultAsset/WD_Portable_HD.jpg", AssetStatus = AssetStatusValue.InUse, Category = 1 },
+                new Asset { AssetModelNo = "Samsung123", Name = "Samsung Curved Monitor", UnitPrice = 1200, DateOfPurchase = DateTime.Now, DateOfManufacture = DateTime.Now.AddMonths(-5), ImageURL = "/images/DefaultAsset/Samsung_Curved_Monitor.jpg", AssetStatus = AssetStatusValue.Available, Category = 1 },
+                new Asset { AssetModelNo = "WD123", Name = "WD Portable HD", UnitPrice = 800, DateOfPurchase = DateTime.Now, DateOfManufacture = DateTime.Now.AddMonths(-2), ImageURL = "/images/DefaultAsset/WD_Portable_HD.jpg", AssetStatus = AssetStatusValue.Available, Category = 1 },
                 new Asset { AssetModelNo = "iPhone123", Name = "iPhone X", UnitPrice = 1800, DateOfPurchase = DateTime.Now, DateOfManufacture = DateTime.Now.AddMonths(-15), ImageURL = "/images/DefaultAsset/iPhone_X.jpg", AssetStatus = AssetStatusValue.Expired, Category = 1 },
                 new Asset { AssetModelNo = "SamsungNote123", Name = "Samsung Note-20", UnitPrice = 2000, DateOfPurchase = DateTime.Now, DateOfManufacture = DateTime.Now.AddMonths(-7), ImageURL = "/images/DefaultAsset/Samsung_Note_20.jpg", AssetStatus = AssetStatusValue.Damage, Category = 1 },
             };
@@ -81,6 +81,10 @@ namespace AMS.Data
                 new Department { Name = "Finance", Description = "Finance Department"},
                 new Department { Name = "Procurement", Description = "Procurement Department"},
                 new Department { Name = "Legal", Description = "Procurement Department"},
+                new Department { Name = "Master Seal", Description = "Production"},
+                new Department { Name = "Master Flash", Description = "Production"},
+                new Department { Name = "Maintenance", Description = "Maintenance"},
+                new Department { Name = "Import Export", Description = "Customs"},
             };
         }
         public IEnumerable<SubDepartment> GetSubDepartmentList()
@@ -92,18 +96,6 @@ namespace AMS.Data
                 new SubDepartment { DepartmentId = 1, Name = "Operation", Description = "Operation Department"},
                 new SubDepartment { DepartmentId = 1, Name = "PM", Description = "Project Management Department"},
                 new SubDepartment { DepartmentId = 2, Name = "Recruitment", Description = "Recruitment Department"},
-            };
-        }
-
-        public IEnumerable<Employee> GetEmployeeList()
-        {
-            return new List<Employee>
-            {
-                new Employee { EmployeeId = StaticData.RandomDigits(6), FirstName = "Mr", LastName = "Tom", DateOfBirth = DateTime.Now.AddYears(-25), Designation = 1, Department = 1, SubDepartment = 4, JoiningDate = DateTime.Now.AddYears(-1), LeavingDate = DateTime.Now, Phone = StaticData.RandomDigits(11), Email="dev1@gmail.com", Address="USA"},
-                new Employee { EmployeeId = StaticData.RandomDigits(6), FirstName = "Mr", LastName = "Bond", DateOfBirth = DateTime.Now.AddYears(-26), Designation = 2, Department = 1, SubDepartment = 2, JoiningDate = DateTime.Now.AddYears(-1), LeavingDate = DateTime.Now, Phone = StaticData.RandomDigits(11), Email="dev2@gmail.com", Address="UK"},
-                new Employee { EmployeeId = StaticData.RandomDigits(6), FirstName = "Mr", LastName = "Hasan", DateOfBirth = DateTime.Now.AddYears(-27), Designation = 2, Department = 1, SubDepartment = 2, JoiningDate = DateTime.Now.AddYears(-1), LeavingDate = DateTime.Now, Phone = StaticData.RandomDigits(11), Email="dev3@gmail.com", Address="Germany"},
-                new Employee { EmployeeId = StaticData.RandomDigits(6), FirstName = "Mr", LastName = "Alex", DateOfBirth = DateTime.Now.AddYears(-28), Designation = 2, Department = 1, SubDepartment = 2, JoiningDate = DateTime.Now.AddYears(-1), LeavingDate = DateTime.Now, Phone = StaticData.RandomDigits(11), Email="dev4@gmail.com", Address="Netherland"},
-                new Employee { EmployeeId = StaticData.RandomDigits(6), FirstName = "Ms", LastName = "Merry", DateOfBirth = DateTime.Now.AddYears(-29), Designation = 3, Department = 1, SubDepartment = 1, JoiningDate = DateTime.Now.AddYears(-1), LeavingDate = DateTime.Now, Phone = StaticData.RandomDigits(11), Email="dev5@gmail.com", Address="Franch"},
             };
         }
         public IEnumerable<Designation> GetDesignationList()
@@ -146,22 +138,29 @@ namespace AMS.Data
                 new AssetIssue { AssetId = 7, RaisedByEmployeeId = 2, Status = "New" },
             };
         }
-
-        public IEnumerable<UserProfileViewModel> GetUserProfileList()
+        public IEnumerable<UserProfileCRUDViewModel> GetUserProfileList()
         {
-            return new List<UserProfileViewModel>
+            return new List<UserProfileCRUDViewModel>
             {
-                new UserProfileViewModel { FirstName = "HR5", LastName = "User", Email = "HR1@gmail.com", PasswordHash = "123", ConfirmPassword = "123", PhoneNumber= StaticData.RandomDigits(11), ProfilePicture = "/images/UserIcon/U1.png", Address = "California", Country = "USA" },
-                new UserProfileViewModel { FirstName = "HR4", LastName = "User", Email = "HR2@gmail.com", PasswordHash = "123", ConfirmPassword = "123", PhoneNumber= StaticData.RandomDigits(11), ProfilePicture = "/images/UserIcon/U2.png", Address = "California", Country = "USA" },
-                new UserProfileViewModel { FirstName = "HR3", LastName = "User", Email = "HR3@gmail.com", PasswordHash = "123", ConfirmPassword = "123", PhoneNumber= StaticData.RandomDigits(11), ProfilePicture = "/images/UserIcon/U3.png", Address = "California", Country = "USA" },
-                new UserProfileViewModel { FirstName = "HR2", LastName = "User", Email = "HR4@gmail.com", PasswordHash = "123", ConfirmPassword = "123", PhoneNumber= StaticData.RandomDigits(11), ProfilePicture = "/images/UserIcon/U4.png", Address = "California", Country = "USA" },
-                new UserProfileViewModel { FirstName = "HR1", LastName = "User", Email = "HR5@gmail.com", PasswordHash = "123", ConfirmPassword = "123", PhoneNumber= StaticData.RandomDigits(11), ProfilePicture = "/images/UserIcon/U5.png", Address = "California", Country = "USA" },
+                new UserProfileCRUDViewModel { FirstName = "Employee 5", LastName = "User", Email = "Employee5@gmail.com", PasswordHash = "123", ConfirmPassword = "123", PhoneNumber= StaticData.RandomDigits(11), ProfilePicture = "/images/UserIcon/U1.png", Address = "California", Country = "USA", },
+                new UserProfileCRUDViewModel { FirstName = "Employee 4", LastName = "User", Email = "Employee4@gmail.com", PasswordHash = "123", ConfirmPassword = "123", PhoneNumber= StaticData.RandomDigits(11), ProfilePicture = "/images/UserIcon/U2.png", Address = "California", Country = "USA", },
+                new UserProfileCRUDViewModel { FirstName = "Employee 3", LastName = "User", Email = "Employee3@gmail.com", PasswordHash = "123", ConfirmPassword = "123", PhoneNumber= StaticData.RandomDigits(11), ProfilePicture = "/images/UserIcon/U3.png", Address = "California", Country = "USA", },
+                new UserProfileCRUDViewModel { FirstName = "Employee 2", LastName = "User", Email = "Employee2@gmail.com", PasswordHash = "123", ConfirmPassword = "123", PhoneNumber= StaticData.RandomDigits(11), ProfilePicture = "/images/UserIcon/U4.png", Address = "California", Country = "USA", },
+                new UserProfileCRUDViewModel { FirstName = "Employee 1", LastName = "User", Email = "Employee1@gmail.com", PasswordHash = "123", ConfirmPassword = "123", PhoneNumber= StaticData.RandomDigits(11), ProfilePicture = "/images/UserIcon/U5.png", Address = "California", Country = "USA", },
 
-                new UserProfileViewModel { FirstName = "Acc1", LastName = "User", Email = "accountants1@gmail.com", PasswordHash = "123", ConfirmPassword = "123", PhoneNumber= StaticData.RandomDigits(11), ProfilePicture = "/images/UserIcon/U6.png", Address = "California", Country = "USA" },
-                new UserProfileViewModel { FirstName = "Acc2", LastName = "User", Email = "accountants2@gmail.com", PasswordHash = "123", ConfirmPassword = "123", PhoneNumber= StaticData.RandomDigits(11), ProfilePicture = "/images/UserIcon/U7.png", Address = "California", Country = "USA" },
-                new UserProfileViewModel { FirstName = "Acc3", LastName = "User", Email = "accountants3@gmail.com", PasswordHash = "123", ConfirmPassword = "123", PhoneNumber= StaticData.RandomDigits(11), ProfilePicture = "/images/UserIcon/U8.png", Address = "California", Country = "USA" },
-                new UserProfileViewModel { FirstName = "Acc4", LastName = "User", Email = "accountants4@gmail.com", PasswordHash = "123", ConfirmPassword = "123", PhoneNumber= StaticData.RandomDigits(11), ProfilePicture = "/images/UserIcon/U9.png", Address = "California", Country = "USA" },
-                new UserProfileViewModel { FirstName = "Acc5", LastName = "User", Email = "accountants5@gmail.com", PasswordHash = "123", ConfirmPassword = "123", PhoneNumber= StaticData.RandomDigits(11), ProfilePicture = "/images/UserIcon/U10.png", Address = "California", Country = "USA" },
+                new UserProfileCRUDViewModel { FirstName = "Regular", LastName = "User", Email = "regular@gmail.com", PasswordHash = "123", ConfirmPassword = "123", PhoneNumber= StaticData.RandomDigits(11), ProfilePicture = "/images/UserIcon/U6.png", Address = "California", Country = "USA", },
+                new UserProfileCRUDViewModel { FirstName = "Technology", LastName = "User", Email = "tech@gmail.com", PasswordHash = "123", ConfirmPassword = "123", PhoneNumber= StaticData.RandomDigits(11), ProfilePicture = "/images/UserIcon/U7.png", Address = "California", Country = "USA", },
+                new UserProfileCRUDViewModel { FirstName = "Finance", LastName = "User", Email = "finance@gmail.com", PasswordHash = "123", ConfirmPassword = "123", PhoneNumber= StaticData.RandomDigits(11), ProfilePicture = "/images/UserIcon/U8.png", Address = "California", Country = "USA", },
+                new UserProfileCRUDViewModel { FirstName = "HR", LastName = "User", Email = "hr@gmail.com", PasswordHash = "123", ConfirmPassword = "123", PhoneNumber= StaticData.RandomDigits(11), ProfilePicture = "/images/UserIcon/U9.png", Address = "California", Country = "USA", },
+                new UserProfileCRUDViewModel { FirstName = "Accountants", LastName = "User", Email = "accountants@gmail.com", PasswordHash = "123", ConfirmPassword = "123", PhoneNumber= StaticData.RandomDigits(11), ProfilePicture = "/images/UserIcon/U10.png", Address = "California", Country = "USA", },
+            };
+        }
+        public IEnumerable<ManageUserRoles> GetManageRoleList()
+        {
+            return new List<ManageUserRoles>
+            {
+                new ManageUserRoles { Name = "Admin", Description = "User Role: New"},
+                new ManageUserRoles { Name = "General", Description = "User Role: General"},
             };
         }
         public CompanyInfo GetCompanyInfo()
@@ -179,7 +178,6 @@ namespace AMS.Data
                 Website = "www.wyx.com",
             };
         }
-
         public void SeedTable(ApplicationDbContext _context)
         {
             var _GetAssetStatusList = GetAssetStatusList();

@@ -17,13 +17,14 @@ namespace AMS.Controllers
             _iCommon = iCommon;
         }
 
-        [Authorize(Roles = Pages.MainMenu.Dashboard.RoleName)]
+        [Authorize(Roles = Pages.RoleViewModel.Dashboard)]
         public IActionResult Index()
         {
             try
             {
                 DashboardSummaryViewModel vm = new DashboardSummaryViewModel();
                 var _UserProfile = _context.UserProfile.ToList();
+                var _IsInRole = User.IsInRole("Admin");
 
                 vm.TotalUser = _UserProfile.Count();
                 vm.TotalActive = _UserProfile.Where(x => x.Cancelled == false).Count();
@@ -34,9 +35,9 @@ namespace AMS.Controllers
                 vm.TotalAsset = _Asset.Count();
                 vm.TotalAssignedAsset = _Asset.Where(x => x.AssignEmployeeId != 0).Count();
                 vm.TotalUnAssignedAsset = _Asset.Where(x => x.AssignEmployeeId == 0).Count();
-                vm.listAssetCRUDViewModel = _iCommon.GetGridAssetList().Take(10).ToList();
+                vm.listAssetCRUDViewModel = _iCommon.GetGridAssetList(_IsInRole).Take(10).ToList();
 
-                vm.TotalEmployee = _context.Employee.Where(x => x.Cancelled == false).Count();
+                vm.TotalEmployee = _context.UserProfile.Where(x => x.Cancelled == false).Count();
                 vm.TotalAssetRequest = _context.AssetRequest.Where(x => x.Cancelled == false).Count();
                 vm.TotalIssue = _context.AssetIssue.Where(x => x.Cancelled == false).Count();
 

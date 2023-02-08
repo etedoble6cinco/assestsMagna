@@ -20,7 +20,7 @@ namespace AMS.Controllers
         }
 
 
-        [Authorize(Roles = Pages.MainMenu.EmailSetting.RoleName)]
+        [Authorize(Roles = Pages.RoleViewModel.EmailSetting)]
         [HttpGet]
         public async Task<IActionResult> Index()
         {

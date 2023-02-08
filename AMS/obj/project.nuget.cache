@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "IThpH72q1i7AH59Zswi5RLunxG8olT5XHwbsOiirhGnWHLQ1Yv+F6yZ+4ibk6et2jz9WetncqoveFxmqDUc8wQ==",
+  "dgSpecHash": "8prP93E/i10lViGSHhLVhvNPupMAGKhfyIhnwHMZasN3qQMmi8j0jdxxDTwuwqVmxKXgnGgVUkr+HYVy0WBPdQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\analista.sistemas\\Documents\\assestsMagna\\AMS\\AMS.csproj",
+  "projectFilePath": "C:\\Users\\analista.sistemas\\Documents\\AM-V2\\AMS\\AMS.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\analista.sistemas\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\analista.sistemas\\.nuget\\packages\\messagepack\\2.1.152\\messagepack.2.1.152.nupkg.sha512",
@@ -83,7 +83,6 @@
     "C:\\Users\\analista.sistemas\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",
     "C:\\Users\\analista.sistemas\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
     "C:\\Users\\analista.sistemas\\.nuget\\packages\\mysqlconnector\\2.1.2\\mysqlconnector.2.1.2.nupkg.sha512",
-    "C:\\Users\\analista.sistemas\\.nuget\\packages\\net.codecrete.qrcodegenerator\\2.0.3\\net.codecrete.qrcodegenerator.2.0.3.nupkg.sha512",
     "C:\\Users\\analista.sistemas\\.nuget\\packages\\netstandard.library\\1.6.1\\netstandard.library.1.6.1.nupkg.sha512",
     "C:\\Users\\analista.sistemas\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
     "C:\\Users\\analista.sistemas\\.nuget\\packages\\newtonsoft.json.bson\\1.0.2\\newtonsoft.json.bson.1.0.2.nupkg.sha512",

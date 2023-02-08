@@ -1,7 +1,10 @@
+using AMS.Helpers;
 using AMS.Models.AssetHistoryViewModel;
+using AMS.Models.AssetIssueViewModel;
+using AMS.Models.AssetRequestViewModel;
 using AMS.Models.CommentViewModel;
 using AMS.Models.CompanyInfoViewModel;
-using AMS.Models.EmployeeViewModel;
+using AMS.Models.UserProfileViewModel;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -11,83 +14,74 @@ namespace AMS.Models.AssetViewModel
 {
     public class AssetCRUDViewModel : EntityBase
     {
-        [Display(Name = "Identificador Unico")]
+        [Display(Name = "SL")]
         [Required]
         public Int64 Id { get; set; }
-        [Display(Name = "Numero Serie")] //numero de serie de cada activo 
+        [Display(Name = "Serial Number")]
         [Required]
         public string AssetId { get; set; }
-        [Display(Name = "Modelo")] // modelo de cada activo   
+        [Display(Name = "Model")]
         public string AssetModelNo { get; set; }
-        [Display(Name = "Nombre SMI")] //Nombre en el sistema de cada actvo   
         [Required]
+        [Display(Name = "Name SMI")]
         public string Name { get; set; }
-        [Display(Name="Descripcion")] //descripcion del activo en el sitema de activo 
+   
         public string Description { get; set; }
-        [Display(Name = "Categoria")]  //categoria del activo en el sistema 
         public int Category { get; set; }
-  
         public string CategoryDisplay { get; set; }
-        [Display(Name = "Sub Categoria")] //sub categoria del activo en el sistema  
-
+        [Display(Name = "Sub Category")]
         public int SubCategory { get; set; }
-     
         public string SubCategoryDisplay { get; set; }
-        [Display(Name = "Cantidad")] // convertir a alfanumerico para poder alojar el codigo del pedimento  
         public int? Quantity { get; set; }
-        [Display(Name = "Precio")] // ELIMINAR DE LA VISTA  
+        [Display(Name = "Unit Price")]
         public double? UnitPrice { get; set; }
-        [Display(Name = "Marca")] // marca a mostrar  de cada activo 
         public int Supplier { get; set; }
-     
         public string SupplierDisplay { get; set; }
-        [Display(Name = "Ubicacion")] //ubicacion del activo en el sistema  
+        [Display (Name = "US or MX Purchase")]
         public string Location { get; set; }
-        [Display(Name = "Departamento")] // departamento del activo en el sistema 
         public int Department { get; set; }
-        
         public string DepartmentDisplay { get; set; }
-        [Display(Name = "Administrado por")] // aquien corresponde la administracion del activo
+        [Display(Name = "Sub Department")]
         public int SubDepartment { get; set; }
         public string SubDepartmentDisplay { get; set; }
-        [Display(Name = "Tipo de Compra")] // el tipo de compra FK de otra tabla de opciones   
+        [Display(Name = "Warranety In Month")]
         public int? WarranetyInMonth { get; set; }
-        [Display(Name = "Ultima revision")] // ULTIMA REVISION DEL ACTIVO  
+        [Display(Name = "Depreciation In Month")]
         public int? DepreciationInMonth { get; set; }
-        [Display(Name = "Imagen")] // ETIQUETA DE LA IMAGEN DEL ACTIVO QUE SE VA A MOSTRAR  
+        [Display(Name = "Image")]
         public string ImageURL { get; set; } = "/upload/blank-asset.png";
         public IFormFile ImageURLDetails { get; set; }
-        
-        //-00000000000000000000000000000000000000000000000000
-
-        [Display(Name = "Fecha de Registro")]  //ELIMINAR DE LA VISTA  
+        [Display(Name = "Purchase Receipt")]
+        public string PurchaseReceipt { get; set; } = "/upload/blank_purchasereceipt.pdf";
+        public IFormFile PurchaseReceiptDetails { get; set; }
+        [Display(Name = "Date Of Purchase")]
         public DateTime DateOfPurchase { get; set; } = DateTime.Now;
-        //-00000000000000000000000000000000000000000000000000
-        [Display(Name = "Fecha de Llegada")] // FECHA DE REGISTRO DE LLEGADA   
+        [Display(Name = "Receipt Date")]
         public DateTime DateOfManufacture { get; set; } = DateTime.Now;
-        [Display(Name = "Año de valoracion")]  // ELIMINAR DE LA VISTA    
-
-        //-0000000000000000000000000000000000000000000000000
+        [Display(Name = "Year Of Valuation")]
         public DateTime YearOfValuation { get; set; } = DateTime.Now;
-        [Display(Name = "Persona Responsable")] // EMPLEADO RESPONSABLE DE ACTIVO 
+        [Display(Name = "Assign Employee")]
         public Int64 AssignEmployeeId { get; set; }
         public string AssignEmployeeDisplay { get; set; }
-        [Display(Name = "Estatus")] // ESTADO DEL ACTIVO 
-        public int AssetStatus { get; set; }
+        [Display(Name = "Asset Status")]
+        public int AssetStatus { get; set; } = AssetStatusValue.New;
         public string AssetStatusDisplay { get; set; }
-        [Display(Name = "Disponibilidad")] // DISPONIBILIDAD DENTRO DE LA PLANTA DEL ACTIVO 
+        [Display(Name = "Is Avilable")]
         public bool IsAvilable { get; set; }
-        [Display(Name = "Notas")] // NOTAS O COMENTARIOS DEL ACTIVO 
+        [Display(Name = "Invoice No.")]
         public string Note { get; set; }
-        [Display(Name ="Codigo de Barras")] //CODIGO DE BARRAS 
         public string Barcode { get; set; }
-        [Display(Name = "Observaciones")]
+        public string QRCode { get; set; }
+        public string QRCodeImage { get; set; }
+        [Display(Name = "Comment Message")]
         public string CommentMessage { get; set; }
-        
         public string CurrentURL { get; set; }
-        public EmployeeCRUDViewModel EmployeeCRUDViewModel { get; set; }
+        public bool IsAdmin { get; set; }
+        public UserProfileCRUDViewModel UserProfileCRUDViewModel { get; set; }
         public List<AssetHistoryCRUDViewModel> listAssetHistoryCRUDViewModel { get; set; }
         public List<CommentCRUDViewModel> listCommentCRUDViewModel { get; set; }
+        public List<AssetRequestCRUDViewModel> listAssetRequestCRUDViewModel { get; set; }
+        public List<AssetIssueCRUDViewModel> listAssetIssueCRUDViewModel { get; set; }
         public CompanyInfoCRUDViewModel CompanyInfoCRUDViewModel { get; set; }
 
         public static implicit operator AssetCRUDViewModel(Asset _Asset)
@@ -110,6 +104,7 @@ namespace AMS.Models.AssetViewModel
                 WarranetyInMonth = _Asset.WarranetyInMonth,
                 DepreciationInMonth = _Asset.DepreciationInMonth,
                 ImageURL = _Asset.ImageURL,
+                PurchaseReceipt = _Asset.PurchaseReceipt,
                 DateOfPurchase = _Asset.DateOfPurchase,
                 DateOfManufacture = _Asset.DateOfManufacture,
                 YearOfValuation = _Asset.YearOfValuation,
@@ -117,7 +112,9 @@ namespace AMS.Models.AssetViewModel
                 AssetStatus = _Asset.AssetStatus,
                 IsAvilable = _Asset.IsAvilable,
                 Note = _Asset.Note,
-                Barcode=_Asset.Barcode,
+                Barcode = _Asset.Barcode,
+                QRCode = _Asset.QRCode,
+                QRCodeImage = _Asset.QRCodeImage,
                 CreatedDate = _Asset.CreatedDate,
                 ModifiedDate = _Asset.ModifiedDate,
                 CreatedBy = _Asset.CreatedBy,
@@ -146,6 +143,7 @@ namespace AMS.Models.AssetViewModel
                 WarranetyInMonth = vm.WarranetyInMonth,
                 DepreciationInMonth = vm.DepreciationInMonth,
                 ImageURL = vm.ImageURL,
+                PurchaseReceipt = vm.PurchaseReceipt,
                 DateOfPurchase = vm.DateOfPurchase,
                 DateOfManufacture = vm.DateOfManufacture,
                 YearOfValuation = vm.YearOfValuation,
@@ -154,6 +152,8 @@ namespace AMS.Models.AssetViewModel
                 IsAvilable = vm.IsAvilable,
                 Note = vm.Note,
                 Barcode = vm.Barcode,
+                QRCode = vm.QRCode,
+                QRCodeImage = vm.QRCodeImage,
                 CreatedDate = vm.CreatedDate,
                 ModifiedDate = vm.ModifiedDate,
                 CreatedBy = vm.CreatedBy,

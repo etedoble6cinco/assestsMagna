@@ -5,7 +5,7 @@ namespace AMS.Models.AssetCategorieViewModel
 {
     public class AssetCategorieCRUDViewModel : EntityBase
     {
-        [Display(Name = "Identificador Unico")]
+        [Display(Name = "SL")]
         [Required]
         public Int64 Id { get; set; }
         public string Name { get; set; }

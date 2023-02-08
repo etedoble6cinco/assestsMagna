@@ -23,7 +23,7 @@ namespace AMS.Controllers
             _iCommon = iCommon;
         }
 
-        [Authorize(Roles = Pages.MainMenu.AssetRequest.RoleName)]
+        [Authorize(Roles = Pages.RoleViewModel.AssetRequest)]
         [HttpGet]
         public IActionResult Index()
         {
@@ -31,7 +31,7 @@ namespace AMS.Controllers
         }
 
         [HttpPost]
-        public IActionResult GetDataTabelData()
+        public async Task<IActionResult> GetDataTabelData()
         {
             try
             {
@@ -47,9 +47,19 @@ namespace AMS.Controllers
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 int resultTotal = 0;
 
-                IQueryable<AssetRequestCRUDViewModel> _GetGridItem = GetGridItem(); ;
-                //var _IsInRole = User.IsInRole("Admin");
-                //var _UserProfile = _context.UserProfile.Where(x => x.Email == HttpContext.User.Identity.Name).SingleOrDefault();
+                IQueryable<AssetRequestCRUDViewModel> _GetGridItem = null;
+                var _UserEmail = HttpContext.User.Identity.Name;
+                var _IsInRole = User.IsInRole("Admin");
+                _GetGridItem = _iCommon.GetAssetRequestList(_IsInRole);
+                if (_IsInRole)
+                {
+                    _GetGridItem = _iCommon.GetAssetRequestList(_IsInRole);
+                }
+                else
+                {
+                    var _GetLoginEmployeeId = await _iCommon.GetLoginEmployeeId(_UserEmail);
+                    _GetGridItem = _iCommon.GetAssetRequestList(_IsInRole).Where(x => x.RequestedEmployeeId == _GetLoginEmployeeId);
+                }
 
                 //Sorting
                 if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnAscDesc)))
@@ -89,7 +99,8 @@ namespace AMS.Controllers
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null) return NotFound();
-            AssetRequestCRUDViewModel vm = await GetGridItem().Where(m => m.Id == id).SingleOrDefaultAsync();
+            var _IsInRole = User.IsInRole("Admin");
+            AssetRequestCRUDViewModel vm = await _iCommon.GetAssetRequestList(_IsInRole).Where(m => m.Id == id).SingleOrDefaultAsync();
             if (vm == null) return NotFound();
             return PartialView("_Details", vm);
         }
@@ -159,45 +170,6 @@ namespace AMS.Controllers
                 _context.Update(_AssetRequest);
                 await _context.SaveChangesAsync();
                 return new JsonResult(_AssetRequest);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        private IQueryable<AssetRequestCRUDViewModel> GetGridItem()
-        {
-            try
-            {
-                var result = (from _AssetRequest in _context.AssetRequest
-                              join _Asset in _context.Asset on _AssetRequest.AssetId equals _Asset.Id
-                              join _RequestedEmployee in _context.Employee on _AssetRequest.RequestedEmployeeId equals _RequestedEmployee.Id
-                              join _ApprovedByEmployee in _context.Employee on _AssetRequest.ApprovedByEmployeeId equals _ApprovedByEmployee.Id
-                              where _AssetRequest.Cancelled == false
-                              select new AssetRequestCRUDViewModel
-                              {
-                                  Id = _AssetRequest.Id,
-                                  AssetId = _AssetRequest.AssetId,
-                                  AssetDisplay = _Asset.Name,
-                                  RequestedEmployeeId = _AssetRequest.RequestedEmployeeId,
-                                  RequestedEmployeeDisplay = _RequestedEmployee.FirstName + " " + _RequestedEmployee.LastName,
-                                  ApprovedByEmployeeId = _AssetRequest.ApprovedByEmployeeId,
-                                  ApprovedByEmployeeDisplay = _ApprovedByEmployee.FirstName + " " + _ApprovedByEmployee.LastName,
-                                  RequestDetails = _AssetRequest.RequestDetails,
-                                  Status = _AssetRequest.Status,
-                                  RequestDate = _AssetRequest.RequestDate,
-                                  ReceiveDate = _AssetRequest.ReceiveDate,
-                                  Comment = _AssetRequest.Comment,
-
-                                  CreatedDate = _AssetRequest.CreatedDate,
-                                  ModifiedDate = _AssetRequest.ModifiedDate,
-                                  CreatedBy = _AssetRequest.CreatedBy,
-                                  ModifiedBy = _AssetRequest.ModifiedBy,
-                                  Cancelled = _AssetRequest.Cancelled,
-
-                              }).OrderByDescending(x => x.Id);
-                return result;
             }
             catch (Exception ex)
             {

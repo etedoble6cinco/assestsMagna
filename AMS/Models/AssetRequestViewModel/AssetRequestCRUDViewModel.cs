@@ -29,6 +29,7 @@ namespace AMS.Models.AssetRequestViewModel
         [Display(Name = "Receive Date")]
         public DateTime ReceiveDate { get; set; } = DateTime.Now.AddDays(7);
         public string Comment { get; set; }
+        public bool IsAdmin { get; set; }
 
         public static implicit operator AssetRequestCRUDViewModel(AssetRequest _AssetRequest)
         {

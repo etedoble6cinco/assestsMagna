@@ -33,7 +33,7 @@ $(document).ready(function () {
             },
             {
                 data: "AssetId", "name": "AssetId", render: function (data, type, row) {
-                    return "<a href='#' onclick=AssetDetails('" + row.AssetId + "');>" + row.AssetId + "-Details</a>";
+                    return "<a href='#' onclick=AssetDetails('" + row.AssetId + "');>" + row.AssetDisplay + "</a>";
                 }
             },
             { "data": "AssignEmployeeDisplay", "name": "AssignEmployeeDisplay" },

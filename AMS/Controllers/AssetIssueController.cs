@@ -23,7 +23,7 @@ namespace AMS.Controllers
             _iCommon = iCommon;
         }
 
-        [Authorize(Roles = Pages.MainMenu.AssetIssue.RoleName)]
+        [Authorize(Roles = Pages.RoleViewModel.AssetIssue)]
         [HttpGet]
         public IActionResult Index()
         {
@@ -31,7 +31,7 @@ namespace AMS.Controllers
         }
 
         [HttpPost]
-        public IActionResult GetDataTabelData()
+        public async Task<IActionResult> GetDataTabelData()
         {
             try
             {
@@ -47,7 +47,20 @@ namespace AMS.Controllers
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 int resultTotal = 0;
 
-                var _GetGridItem = GetGridItem();
+                IQueryable<AssetIssueCRUDViewModel> _GetGridItem = null;
+                var _UserEmail = HttpContext.User.Identity.Name;
+                var _IsInRole = User.IsInRole("Admin");
+                _GetGridItem = _iCommon.GetAssetIssueList(_IsInRole);
+                if (_IsInRole)
+                {
+                    _GetGridItem = _iCommon.GetAssetIssueList(_IsInRole);
+                }
+                else
+                {
+                    var _GetLoginEmployeeId = await _iCommon.GetLoginEmployeeId(_UserEmail);
+                    _GetGridItem = _iCommon.GetAssetIssueList(_IsInRole).Where(x => x.RaisedByEmployeeId == _GetLoginEmployeeId);
+                }
+
                 //Sorting
                 if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnAscDesc)))
                 {
@@ -85,7 +98,8 @@ namespace AMS.Controllers
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null) return NotFound();
-            AssetIssueCRUDViewModel vm = await GetGridItem().Where(m => m.Id == id).SingleOrDefaultAsync();
+            var _IsInRole = User.IsInRole("Admin");
+            AssetIssueCRUDViewModel vm = await _iCommon.GetAssetIssueList(_IsInRole).Where(m => m.Id == id).SingleOrDefaultAsync();
             if (vm == null) return NotFound();
             return PartialView("_Details", vm);
         }
@@ -155,40 +169,6 @@ namespace AMS.Controllers
                 _context.Update(_AssetIssue);
                 await _context.SaveChangesAsync();
                 return new JsonResult(_AssetIssue);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-        private IQueryable<AssetIssueCRUDViewModel> GetGridItem()
-        {
-            try
-            {
-                var result = (from _AssetIssue in _context.AssetIssue
-                              join _Asset in _context.Asset on _AssetIssue.AssetId equals _Asset.Id
-                              join _RaisedByEmployee in _context.Employee on _AssetIssue.RaisedByEmployeeId equals _RaisedByEmployee.Id
-                              where _AssetIssue.Cancelled == false
-                              select new AssetIssueCRUDViewModel
-                              {
-                                  Id = _AssetIssue.Id,
-                                  AssetId = _AssetIssue.AssetId,
-                                  AssetDisplay = _Asset.Name,
-                                  RaisedByEmployeeId = _AssetIssue.RaisedByEmployeeId,
-                                  RaisedByEmployeeDisplay = _RaisedByEmployee.FirstName + " " + _RaisedByEmployee.LastName,
-                                  IssueDescription = _AssetIssue.IssueDescription,
-                                  Status = _AssetIssue.Status,
-                                  ExpectedFixDate = _AssetIssue.ExpectedFixDate,
-                                  ResolvedDate = _AssetIssue.ResolvedDate,
-                                  Comment = _AssetIssue.Comment,
-                                  CreatedDate = _AssetIssue.CreatedDate,
-                                  ModifiedDate = _AssetIssue.ModifiedDate,
-                                  CreatedBy = _AssetIssue.CreatedBy,
-                                  ModifiedBy = _AssetIssue.ModifiedBy,
-                                  Cancelled = _AssetIssue.Cancelled,
-                              }).OrderByDescending(x => x.Id);
-
-                return result;
             }
             catch (Exception ex)
             {

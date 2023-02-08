@@ -2,15 +2,18 @@
 using AMS.Data;
 using AMS.Models;
 using AMS.Models.CommonViewModel;
-using AMS.Models.UserAccountViewModel;
+using AMS.Models.ManageUserRolesVM;
+using AMS.Models.UserProfileViewModel;
+using AMS.Pages;
 using AMS.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
 
-namespace AMS.Controllers
+namespace LeaveMGS.Controllers
 {
     [Authorize]
     [Route("[controller]/[action]")]
@@ -21,21 +24,24 @@ namespace AMS.Controllers
         private readonly ICommon _iCommon;
         private readonly IEmailSender _emailSender;
         private readonly IAccount _iAccount;
+        private readonly IRoles _roles;
 
         public UserManagementController(UserManager<ApplicationUser> userManager,
             ApplicationDbContext context,
             ICommon iCommon,
             IEmailSender emailSender,
-            IAccount iAccount)
+            IAccount iAccount,
+            IRoles roles)
         {
             _context = context;
             _userManager = userManager;
             _iCommon = iCommon;
             _emailSender = emailSender;
             _iAccount = iAccount;
+            _roles = roles;
         }
 
-        [Authorize(Roles = Pages.MainMenu.SuperAdmin.RoleName)]
+        [Authorize(Roles = RoleViewModel.SuperAdmin)]
         [HttpGet]
         public IActionResult Index()
         {
@@ -89,16 +95,24 @@ namespace AMS.Controllers
         }
 
         [HttpGet]
-        public IActionResult ViewUserDetails(Int64 id)
+        public async Task<IActionResult> ViewUserDetails(Int64 id)
         {
-            var _GetByUserProfileInfo = _iCommon.GetByUserProfileInfo(id);
-            return PartialView("_ViewUserDetails", _GetByUserProfileInfo);
+            var result = await _iCommon.GetUserProfileDetails().Where(x => x.UserProfileId == id).SingleOrDefaultAsync();
+            result.listAssetAssignedCRUDViewModel = await _iCommon.GetAssetAssignedListAllStatus(id).ToListAsync();
+            return PartialView("_ViewUserDetails", result);
         }
 
         [HttpGet]
         public IActionResult AddEditUserAccount(Int64 id)
         {
-            UserProfileViewModel _UserProfileViewModel = new UserProfileViewModel();
+            ViewBag.ddlEmployeeType = new SelectList(_iCommon.GetCommonddlData("EmployeeType"), "Id", "Name");
+
+            ViewBag.ddlManageUserRoles = new SelectList(_iCommon.GetCommonddlData("ManageUserRoles"), "Id", "Name");
+            ViewBag.ddlDepartment = new SelectList(_iCommon.GetCommonddlData("Department"), "Id", "Name");
+            ViewBag.ddlSubDepartment = new SelectList(_iCommon.GetCommonddlData("SubDepartment"), "Id", "Name");
+            ViewBag.ddlDesignation = new SelectList(_iCommon.GetCommonddlData("Designation"), "Id", "Name");
+
+            UserProfileCRUDViewModel _UserProfileViewModel = new();
             if (id > 0)
             {
                 _UserProfileViewModel = _iCommon.GetByUserProfile(id);
@@ -108,27 +122,38 @@ namespace AMS.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> AddEditUserAccount(UserProfileViewModel _UserProfileViewModel)
+        public async Task<JsonResult> AddEditUserAccount(UserProfileCRUDViewModel _UserProfileViewModel)
         {
-            JsonResultViewModel _JsonResultViewModel = new JsonResultViewModel();
+            JsonResultViewModel _JsonResultViewModel = new();
             try
             {
                 if (_UserProfileViewModel.UserProfileId > 0)
                 {
                     UserProfile _UserProfile = _iCommon.GetByUserProfile(_UserProfileViewModel.UserProfileId);
-                    _UserProfile.FirstName = _UserProfileViewModel.FirstName;
-                    _UserProfile.LastName = _UserProfileViewModel.LastName;
-                    _UserProfile.PhoneNumber = _UserProfileViewModel.PhoneNumber;
-                    _UserProfile.Address = _UserProfileViewModel.Address;
-                    _UserProfile.Country = _UserProfileViewModel.Country;
-
                     if (_UserProfileViewModel.ProfilePictureDetails != null)
-                        _UserProfile.ProfilePicture = "/upload/" + _iCommon.UploadedFile(_UserProfileViewModel.ProfilePictureDetails);
+                        _UserProfileViewModel.ProfilePicture = "/upload/" + _iCommon.UploadedFile(_UserProfileViewModel.ProfilePictureDetails);
+                    else
+                        _UserProfileViewModel.ProfilePicture = _UserProfile.ProfilePicture;
 
-                    _UserProfile.ModifiedDate = DateTime.Now;
-                    _UserProfile.ModifiedBy = HttpContext.User.Identity.Name;
-                    var result2 = _context.UserProfile.Update(_UserProfile);
+                    Int64 _CurrentRoleId = _UserProfile.RoleId;
+                    _UserProfileViewModel.ModifiedDate = DateTime.Now;
+                    _UserProfileViewModel.ModifiedBy = HttpContext.User.Identity.Name;
+                    _UserProfileViewModel.CreatedDate = _UserProfile.CreatedDate;
+                    _UserProfileViewModel.CreatedBy = _UserProfile.CreatedBy;
+                    _context.Entry(_UserProfile).CurrentValues.SetValues(_UserProfileViewModel);
                     await _context.SaveChangesAsync();
+
+                    if (_CurrentRoleId != _UserProfileViewModel.RoleId)
+                    {
+                        var _ManageRoleDetails = await _context.ManageUserRolesDetails.Where(x => x.ManageRoleId == _UserProfileViewModel.RoleId && x.IsAllowed == true).ToListAsync();
+                        ManageUserRolesCRUDViewModel _ManageUserRolesCRUDViewModel = new() 
+                        {
+                            ApplicationUserId = _UserProfileViewModel.ApplicationUserId,
+                            listManageUserRolesDetails = _ManageRoleDetails,
+                        };
+                        await _roles.UpdateUserRoles(_ManageUserRolesCRUDViewModel);
+                    }
+                        
 
                     _JsonResultViewModel.AlertMessage = "User info Updated Successfully. User Name: " + _UserProfile.Email;
                     _JsonResultViewModel.CurrentURL = _UserProfileViewModel.CurrentURL;
@@ -228,13 +253,17 @@ namespace AMS.Controllers
             }
             return new JsonResult(_UserProfile);
         }
-        private void AddErrors(IdentityResult result)
+        private async Task<bool> UpdateUserRole(UserProfileCRUDViewModel vm)
         {
-            foreach (var error in result.Errors)
+            var _ManageRoleDetails = await _context.ManageUserRolesDetails.Where(x => x.ManageRoleId == vm.RoleId && x.IsAllowed == true).ToListAsync();
+            var _ApplicationUser = await _userManager.FindByIdAsync(vm.ApplicationUserId);
+            var roles = await _userManager.GetRolesAsync(_ApplicationUser);
+            var result = await _userManager.RemoveFromRolesAsync(_ApplicationUser, roles);
+            foreach (var item in _ManageRoleDetails)
             {
-                ModelState.AddModelError(string.Empty, error.Description);
+                await _userManager.AddToRoleAsync(_ApplicationUser, item.RoleName);
             }
+            return true;
         }
-
     }
 }

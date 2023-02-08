@@ -5,12 +5,15 @@ using AMS.Data;
 using AMS.Models;
 using AMS.Models.CommonViewModel;
 using AMS.Models.AssetViewModel;
-using AMS.Models.EmployeeViewModel;
+using AMS.Models.UserProfileViewModel;
 using AMS.Models.AssetHistoryViewModel;
-using AMS.Models.UserAccountViewModel;
 using AMS.Models.CommentViewModel;
 using AMS.Models.CompanyInfoViewModel;
 using Microsoft.AspNetCore.Identity;
+using AMS.Helpers;
+using AMS.Models.AssetRequestViewModel;
+using AMS.Models.AssetIssueViewModel;
+using AMS.Models.ManageUserRolesVM;
 
 namespace AMS.Services
 {
@@ -23,22 +26,22 @@ namespace AMS.Services
             _iHostingEnvironment = iHostingEnvironment;
             _context = context;
         }
-        public string UploadedFile(IFormFile ProfilePicture)
+        public string UploadedFile(IFormFile _IFormFile)
         {
             string ProfilePictureFileName = null;
 
-            if (ProfilePicture != null)
+            if (_IFormFile != null)
             {
                 string uploadsFolder = Path.Combine(_iHostingEnvironment.ContentRootPath, "wwwroot/upload");
 
-                if (ProfilePicture.FileName == null)
+                if (_IFormFile.FileName == null)
                     ProfilePictureFileName = Guid.NewGuid().ToString() + "_" + "blank-person.png";
                 else
-                    ProfilePictureFileName = Guid.NewGuid().ToString() + "_" + ProfilePicture.FileName;
+                    ProfilePictureFileName = Guid.NewGuid().ToString() + "_" + _IFormFile.FileName;
                 string filePath = Path.Combine(uploadsFolder, ProfilePictureFileName);
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
-                    ProfilePicture.CopyTo(fileStream);
+                    _IFormFile.CopyTo(fileStream);
                 }
             }
             return ProfilePictureFileName;
@@ -56,6 +59,55 @@ namespace AMS.Services
         public UserProfile GetByUserProfile(Int64 id)
         {
             return _context.UserProfile.Where(x => x.UserProfileId == id).SingleOrDefault();
+        }
+        public IQueryable<UserProfileCRUDViewModel> GetUserProfileDetails()
+        {
+            var result = (from vm in _context.UserProfile
+                          join _Department in _context.Department on vm.Department equals _Department.Id
+                          into _Department
+                          from objDepartment in _Department.DefaultIfEmpty()
+                          join _SubDepartment in _context.SubDepartment on vm.SubDepartment equals _SubDepartment.Id
+                          into _SubDepartment
+                          from objSubDepartment in _SubDepartment.DefaultIfEmpty()
+                          join _Designation in _context.Designation on vm.Designation equals _Designation.Id
+                          into _Designation
+                          from objDesignation in _Designation.DefaultIfEmpty()
+                          join _ManageRole in _context.ManageUserRoles on vm.RoleId equals _ManageRole.Id
+                          into _ManageRole
+                          from objManageRole in _ManageRole.DefaultIfEmpty()
+                          where vm.Cancelled == false
+                          select new UserProfileCRUDViewModel
+                          {
+                              UserProfileId = vm.UserProfileId,
+                              ApplicationUserId = vm.ApplicationUserId,
+                              EmployeeId = vm.EmployeeId,
+                              FirstName = vm.FirstName,
+                              LastName = vm.LastName,
+                              DateOfBirth = vm.DateOfBirth,
+                              Designation = vm.Designation,
+                              DesignationDisplay = objDesignation.Name,
+                              Department = vm.Department,
+                              DepartmentDisplay = objDepartment.Name,
+                              SubDepartment = vm.SubDepartment,
+                              SubDepartmentDisplay = objSubDepartment.Name,
+                              JoiningDate = vm.JoiningDate,
+                              LeavingDate = vm.LeavingDate,
+                              PhoneNumber = vm.PhoneNumber,
+                              Email = vm.Email,
+                              Address = vm.Address,
+                              Country = vm.Country,
+                              ProfilePicture = vm.ProfilePicture,
+                              RoleId = vm.RoleId,
+                              RoleIdDisplay = objManageRole.Name,
+                              IsApprover = vm.IsApprover,
+                              IsApproverDisplay = vm.IsApprover == 1 ? "No" : "Yes",
+                              CreatedDate = vm.CreatedDate,
+                              ModifiedDate = vm.ModifiedDate,
+                              CreatedBy = vm.CreatedBy,
+                              ModifiedBy = vm.ModifiedBy,
+                              Cancelled = vm.Cancelled,
+                          }).OrderByDescending(x => x.UserProfileId);
+            return result;
         }
         public UserProfileCRUDViewModel GetByUserProfileInfo(Int64 id)
         {
@@ -103,11 +155,14 @@ namespace AMS.Services
         }
         public IQueryable<ItemDropdownListViewModel> GetCommonddlData(string strTableName)
         {
-            var sql = "select Id, Name from "+ strTableName +" where Cancelled = 0";
+            var sql = "select Id, Name from " + strTableName + " where Cancelled = 0";
             var result = _context.ItemDropdownListViewModel.FromSqlRaw(sql);
             return result;
         }
-
+        public IEnumerable<T> GetTableData<T>(ApplicationDbContext dbContext) where T : class
+        {
+            return dbContext.Set<T>();
+        }
         public IQueryable<ItemDropdownListViewModel> LoadddlDepartment()
         {
             return (from tblObj in _context.Department.Where(x => x.Cancelled == false).OrderBy(x => x.Id)
@@ -164,10 +219,10 @@ namespace AMS.Services
         }
         public IQueryable<ItemDropdownListViewModel> LoadddlEmployee()
         {
-            var result = (from tblObj in _context.Employee.Where(x => x.Cancelled == false).OrderBy(x => x.Id)
+            var result = (from tblObj in _context.UserProfile.Where(x => x.Cancelled == false).OrderBy(x => x.UserProfileId)
                           select new ItemDropdownListViewModel
                           {
-                              Id = tblObj.Id,
+                              Id = tblObj.UserProfileId,
                               Name = tblObj.FirstName + " " + tblObj.LastName,
                           });
             return result;
@@ -182,12 +237,12 @@ namespace AMS.Services
                           });
             return result;
         }
-        public IQueryable<AssetCRUDViewModel> GetGridAssetList()
+        public IQueryable<AssetCRUDViewModel> GetGridAssetList(bool _IsAdmin)
         {
             try
             {
                 return (from _Asset in _context.Asset
-                        join _Employee in _context.Employee on _Asset.AssignEmployeeId equals _Employee.Id
+                        join _UserProfile in _context.UserProfile on _Asset.AssignEmployeeId equals _UserProfile.UserProfileId
                         into listEmployee
                         from _Employee in listEmployee.DefaultIfEmpty()
                         where _Asset.Cancelled == false
@@ -202,6 +257,7 @@ namespace AMS.Services
                             UnitPrice = _Asset.UnitPrice,
                             DateOfPurchase = _Asset.DateOfPurchase,
                             ImageURL = _Asset.ImageURL,
+                            IsAdmin = _IsAdmin
                         }).OrderByDescending(x => x.Id);
             }
             catch (Exception ex)
@@ -256,6 +312,7 @@ namespace AMS.Services
                             WarranetyInMonth = _Asset.WarranetyInMonth,
                             DepreciationInMonth = _Asset.DepreciationInMonth,
                             ImageURL = _Asset.ImageURL,
+                            PurchaseReceipt = Path.GetFileName(_Asset.PurchaseReceipt),
                             DateOfPurchase = _Asset.DateOfPurchase,
                             DateOfManufacture = _Asset.DateOfManufacture,
                             YearOfValuation = _Asset.YearOfValuation,
@@ -265,6 +322,8 @@ namespace AMS.Services
                             IsAvilable = _Asset.IsAvilable,
                             Note = _Asset.Note,
                             Barcode = _Asset.Barcode,
+                            QRCode = _Asset.QRCode,
+                            QRCodeImage = _Asset.QRCodeImage,
                             CreatedDate = _Asset.CreatedDate,
                             ModifiedDate = _Asset.ModifiedDate,
                             CreatedBy = _Asset.CreatedBy,
@@ -277,74 +336,6 @@ namespace AMS.Services
                 throw ex;
             }
         }
-
-        public IQueryable<EmployeeCRUDViewModel> GetEmployeeList()
-        {
-            try
-            {
-                return (from _Employee in _context.Employee
-                        join _Department in _context.Department on _Employee.Department equals _Department.Id
-                        //join _SubDepartment in _context.SubDepartment on _Employee.SubDepartment equals _SubDepartment.Id
-                        join _Designation in _context.Designation on _Employee.Designation equals _Designation.Id
-                        where _Employee.Cancelled == false
-                        select new EmployeeCRUDViewModel
-                        {
-                            Id = _Employee.Id,
-                            EmployeeId = _Employee.EmployeeId,
-                            FirstName = _Employee.FirstName,
-                            LastName = _Employee.LastName,
-                            DateOfBirth = _Employee.DateOfBirth,
-                            Designation = _Employee.Designation,
-                            DesignationDisplay = _Designation.Name,
-                            Department = _Employee.Department,
-                            DepartmentDisplay = _Department.Name,
-
-                            SubDepartment = _Employee.SubDepartment,
-                            //SubDepartmentDisplay = _SubDepartment.Name,
-                            JoiningDate = _Employee.JoiningDate,
-                            LeavingDate = _Employee.LeavingDate,
-                            Phone = _Employee.Phone,
-                            Email = _Employee.Email,
-                            Address = _Employee.Address,
-                            CreatedDate = _Employee.CreatedDate,
-                            ModifiedDate = _Employee.ModifiedDate,
-                            CreatedBy = _Employee.CreatedBy,
-                            ModifiedBy = _Employee.ModifiedBy,
-                        }).OrderByDescending(x => x.Id);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public IQueryable<EmployeeCRUDViewModel> GetEmployeeGridList()
-        {
-            try
-            {
-                return (from _Employee in _context.Employee
-                        join _Department in _context.Department on _Employee.Department equals _Department.Id
-                        join _Designation in _context.Designation on _Employee.Designation equals _Designation.Id
-                        where _Employee.Cancelled == false
-                        select new EmployeeCRUDViewModel
-                        {
-                            Id = _Employee.Id,
-                            EmployeeId = _Employee.EmployeeId,
-                            FirstName = _Employee.FirstName,
-                            LastName = _Employee.LastName,
-                            DateOfBirth = _Employee.DateOfBirth,
-                            Designation = _Employee.Designation,
-                            DesignationDisplay = _Designation.Name,
-                            Department = _Employee.Department,
-                            DepartmentDisplay = _Department.Name,
-                        }).OrderByDescending(x => x.Id);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
         public async Task<AssetHistory> AddAssetHistory(AssetHistoryCRUDViewModel vm)
         {
             try
@@ -371,7 +362,10 @@ namespace AMS.Services
             try
             {
                 var result = (from _AssetHistory in _context.AssetHistory
-                              join _Employee in _context.Employee on _AssetHistory.AssignEmployeeId equals _Employee.Id
+                              join _Asset in _context.Asset on _AssetHistory.AssetId equals _Asset.Id
+                              into listAsset
+                              from _Asset in listAsset.DefaultIfEmpty()
+                              join _UserProfile in _context.UserProfile on _AssetHistory.AssignEmployeeId equals _UserProfile.UserProfileId
                               into listEmployee
                               from _Employee in listEmployee.DefaultIfEmpty()
                               where _AssetHistory.Cancelled == false
@@ -379,6 +373,7 @@ namespace AMS.Services
                               {
                                   Id = _AssetHistory.Id,
                                   AssetId = _AssetHistory.AssetId,
+                                  AssetDisplay = _Asset.Name,
                                   Action = _AssetHistory.Action,
                                   AssignEmployeeId = _AssetHistory.AssignEmployeeId,
                                   AssignEmployeeDisplay = _AssetHistory.AssignEmployeeId == 0 ? "Unassigned" : _Employee.FirstName + " " + _Employee.LastName,
@@ -399,8 +394,7 @@ namespace AMS.Services
             try
             {
                 return (from _Comment in _context.Comment
-                        join _Asset in _context.Asset
-                        on _Comment.AssetId equals _Asset.Id
+                        join _Asset in _context.Asset on _Comment.AssetId equals _Asset.Id
                         select new CommentCRUDViewModel
                         {
                             Id = _Comment.Id,
@@ -424,8 +418,7 @@ namespace AMS.Services
             try
             {
                 return (from _Comment in _context.Comment
-                        join _Asset in _context.Asset
-                        on _Comment.AssetId equals _Asset.Id
+                        join _Asset in _context.Asset on _Comment.AssetId equals _Asset.Id
                         where _Comment.Cancelled == false && _Asset.Id == AssetId
                         select new CommentCRUDViewModel
                         {
@@ -445,15 +438,27 @@ namespace AMS.Services
             }
         }
 
-        public IQueryable<BarcodeViewModel> GetBarcodeList()
+        public IQueryable<ScannerCodeViewModel> GetBarcodeList()
         {
             var result = (from _Asset in _context.Asset
                           where _Asset.Cancelled == false
-                          select new BarcodeViewModel
+                          select new ScannerCodeViewModel
                           {
                               Id = _Asset.Id,
                               AssetName = _Asset.Name,
                               Barcode = _Asset.Barcode,
+                          }).OrderBy(x => x.Id);
+            return result;
+        }
+        public IQueryable<ScannerCodeViewModel> GetQRcodeList()
+        {
+            var result = (from _Asset in _context.Asset
+                          where _Asset.Cancelled == false
+                          select new ScannerCodeViewModel
+                          {
+                              Id = _Asset.Id,
+                              AssetName = _Asset.Name,
+                              Barcode = _Asset.QRCodeImage,
                           }).OrderBy(x => x.Id);
             return result;
         }
@@ -463,36 +468,180 @@ namespace AMS.Services
             CompanyInfoCRUDViewModel vm = _context.CompanyInfo.FirstOrDefault(m => m.Id == 1);
             return vm;
         }
-        public async Task<UpdateRoleViewModel> GetRoleByUser(string _ApplicationUserId, UserManager<ApplicationUser> _userManager, RoleManager<IdentityRole> _roleManager)
+        public async Task<Int64> GetLoginEmployeeId(string _UserEmail)
         {
-            UpdateRoleViewModel _UpdateRoleViewModel = new UpdateRoleViewModel();
-            List<ManageUserRolesViewModel> list = new List<ManageUserRolesViewModel>();
-
-            _UpdateRoleViewModel.ApplicationUserId = _ApplicationUserId;
-            var user = await _userManager.FindByIdAsync(_ApplicationUserId);
-            if (user != null)
+            Int64 _UserProfileId = 0;
+            var _ApplicationUser = await _context.ApplicationUser.Where(x => x.Email == _UserEmail).SingleOrDefaultAsync();
+            if (_ApplicationUser != null)
             {
-                foreach (var role in _roleManager.Roles.ToList())
-                {
-                    var userRolesViewModel = new ManageUserRolesViewModel
-                    {
-                        RoleId = role.Id,
-                        RoleName = role.Name
-                    };
-                    if (await _userManager.IsInRoleAsync(user, role.Name))
-                    {
-                        userRolesViewModel.Selected = true;
-                    }
-                    else
-                    {
-                        userRolesViewModel.Selected = false;
-                    }
-                    list.Add(userRolesViewModel);
-                }
+                _UserProfileId = _context.UserProfile.Where(x => x.ApplicationUserId == _ApplicationUser.Id).SingleOrDefault().UserProfileId;
             }
+            return _UserProfileId;
+        }
+        public IQueryable<AssetAssignedCRUDViewModel> GetAssetAssignedList(Int64 _EmployeeId)
+        {
+            try
+            {
+                var result = (from _AssetAssigned in _context.AssetAssigned
+                              join _Asset in _context.Asset on _AssetAssigned.AssetId equals _Asset.Id
+                              join _UserProfile in _context.UserProfile on _AssetAssigned.EmployeeId equals _UserProfile.UserProfileId
+                              where _AssetAssigned.Cancelled == false && _AssetAssigned.EmployeeId == _EmployeeId && _AssetAssigned.Status == AssetAssignedStatus.Assigned
+                              select new AssetAssignedCRUDViewModel
+                              {
+                                  Id = _AssetAssigned.Id,
+                                  AssetId = _AssetAssigned.AssetId,
+                                  AssetName = _Asset.Name,
+                                  EmployeeId = _AssetAssigned.EmployeeId,
+                                  EmployeeName = _UserProfile.FirstName + " " + _UserProfile.LastName,
+                                  Status = _AssetAssigned.Status,
 
-            _UpdateRoleViewModel.listManageUserRolesViewModel = list.OrderBy(x => x.RoleName).ToList();
-            return _UpdateRoleViewModel;
+                                  CreatedDate = _AssetAssigned.CreatedDate,
+                                  ModifiedDate = _AssetAssigned.ModifiedDate,
+                                  CreatedBy = _AssetAssigned.CreatedBy,
+                                  ModifiedBy = _AssetAssigned.ModifiedBy,
+                              }).OrderBy(x => x.Id);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public IQueryable<AssetAssignedCRUDViewModel> GetAssetAssignedListAllStatus(Int64 _EmployeeId)
+        {
+            try
+            {
+                var result = (from _AssetAssigned in _context.AssetAssigned
+                              join _Asset in _context.Asset on _AssetAssigned.AssetId equals _Asset.Id
+                              join _UserProfile in _context.UserProfile on _AssetAssigned.EmployeeId equals _UserProfile.UserProfileId
+                              where _AssetAssigned.Cancelled == false && _AssetAssigned.EmployeeId == _EmployeeId && _Asset.Cancelled == false
+                              select new AssetAssignedCRUDViewModel
+                              {
+                                  Id = _AssetAssigned.Id,
+                                  AssetId = _AssetAssigned.AssetId,
+                                  AssetName = _Asset.Name,
+                                  EmployeeId = _AssetAssigned.EmployeeId,
+                                  EmployeeName = _UserProfile.FirstName + " " + _UserProfile.LastName,
+                                  Status = _AssetAssigned.Status,
+
+                                  CreatedDate = _AssetAssigned.CreatedDate,
+                                  ModifiedDate = _AssetAssigned.ModifiedDate,
+                                  CreatedBy = _AssetAssigned.CreatedBy,
+                                  ModifiedBy = _AssetAssigned.ModifiedBy,
+                              }).OrderBy(x => x.Id);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public DownloadPurchaseReceiptViewModel GetDownloadDetails(Int64 id)
+        {
+            DownloadPurchaseReceiptViewModel vm = new();
+            try
+            {
+                var _Asset = _context.Asset.Where(x => x.Id == id).SingleOrDefault();
+                string _WebRootPath = _iHostingEnvironment.WebRootPath + _Asset.PurchaseReceipt;
+                using (var _MemoryStream = new MemoryStream())
+                {
+                    using (FileStream file = new FileStream(_WebRootPath, FileMode.Open, FileAccess.Read))
+                        file.CopyTo(_MemoryStream);
+                    vm.DocByte = _MemoryStream.ToArray();
+                }
+                //string _GetExtension = Path.GetExtension(_Asset.PurchaseReceipt);
+                vm.FileName = Path.GetFileName(_Asset.PurchaseReceipt);
+                vm.ContentType = "application/octet-stream";
+                return vm;
+            }
+            catch (Exception) { throw; }
+        }
+        public IQueryable<AssetRequestCRUDViewModel> GetAssetRequestList(bool _IsAdmin)
+        {
+            try
+            {
+                var result = (from _AssetRequest in _context.AssetRequest
+                              join _Asset in _context.Asset on _AssetRequest.AssetId equals _Asset.Id
+                              join _RequestedEmployee in _context.UserProfile on _AssetRequest.RequestedEmployeeId equals _RequestedEmployee.UserProfileId
+                              join _ApprovedByEmployee in _context.UserProfile on _AssetRequest.ApprovedByEmployeeId equals _ApprovedByEmployee.UserProfileId
+                              where _AssetRequest.Cancelled == false
+                              select new AssetRequestCRUDViewModel
+                              {
+                                  Id = _AssetRequest.Id,
+                                  AssetId = _AssetRequest.AssetId,
+                                  AssetDisplay = _Asset.Name,
+                                  RequestedEmployeeId = _AssetRequest.RequestedEmployeeId,
+                                  RequestedEmployeeDisplay = _RequestedEmployee.FirstName + " " + _RequestedEmployee.LastName,
+                                  ApprovedByEmployeeId = _AssetRequest.ApprovedByEmployeeId,
+                                  ApprovedByEmployeeDisplay = _ApprovedByEmployee.FirstName + " " + _ApprovedByEmployee.LastName,
+                                  RequestDetails = _AssetRequest.RequestDetails,
+                                  Status = _AssetRequest.Status,
+                                  RequestDate = _AssetRequest.RequestDate,
+                                  ReceiveDate = _AssetRequest.ReceiveDate,
+                                  Comment = _AssetRequest.Comment,
+
+                                  CreatedDate = _AssetRequest.CreatedDate,
+                                  ModifiedDate = _AssetRequest.ModifiedDate,
+                                  CreatedBy = _AssetRequest.CreatedBy,
+                                  ModifiedBy = _AssetRequest.ModifiedBy,
+                                  Cancelled = _AssetRequest.Cancelled,
+                                  IsAdmin = _IsAdmin                                
+                              }).OrderByDescending(x => x.Id);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public IQueryable<AssetIssueCRUDViewModel> GetAssetIssueList(bool _IsAdmin)
+        {
+            try
+            {
+                var result = (from _AssetIssue in _context.AssetIssue
+                              join _Asset in _context.Asset on _AssetIssue.AssetId equals _Asset.Id
+                              join _RaisedByEmployee in _context.UserProfile on _AssetIssue.RaisedByEmployeeId equals _RaisedByEmployee.UserProfileId
+                              where _AssetIssue.Cancelled == false
+                              select new AssetIssueCRUDViewModel
+                              {
+                                  Id = _AssetIssue.Id,
+                                  AssetId = _AssetIssue.AssetId,
+                                  AssetDisplay = _Asset.Name,
+                                  RaisedByEmployeeId = _AssetIssue.RaisedByEmployeeId,
+                                  RaisedByEmployeeDisplay = _RaisedByEmployee.FirstName + " " + _RaisedByEmployee.LastName,
+                                  IssueDescription = _AssetIssue.IssueDescription,
+                                  Status = _AssetIssue.Status,
+                                  ExpectedFixDate = _AssetIssue.ExpectedFixDate,
+                                  ResolvedDate = _AssetIssue.ResolvedDate,
+                                  Comment = _AssetIssue.Comment,
+                                  CreatedDate = _AssetIssue.CreatedDate,
+                                  ModifiedDate = _AssetIssue.ModifiedDate,
+                                  CreatedBy = _AssetIssue.CreatedBy,
+                                  ModifiedBy = _AssetIssue.ModifiedBy,
+                                  Cancelled = _AssetIssue.Cancelled,
+                                  IsAdmin = _IsAdmin
+                              }).OrderByDescending(x => x.Id);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public async Task<List<ManageUserRolesDetails>> GetManageRoleDetailsList(Int64 id)
+        {
+            var result = await (from tblObj in _context.ManageUserRolesDetails.Where(x => x.ManageRoleId == id)
+                                select new ManageUserRolesDetails
+                                {
+                                    Id = tblObj.Id,
+                                    RoleId = tblObj.RoleId,
+                                    RoleName = tblObj.RoleName,
+                                    IsAllowed = tblObj.IsAllowed,
+                                }).OrderBy(x => x.RoleName).ToListAsync();
+            return result;
         }
     }
 }

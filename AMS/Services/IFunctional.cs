@@ -6,7 +6,8 @@ namespace AMS.Services
 {
     public interface IFunctional
     {
-        void InitAppData();
+        Task InitAppData();
+        Task GenerateUserUserRole();
         Task CreateAsset();
         Task CreateDefaultSuperAdmin();
         Task CreateDefaultOtherUser();

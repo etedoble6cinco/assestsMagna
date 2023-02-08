@@ -4,8 +4,14 @@ $(document).ready(function () {
 
 var Details = function (id) {
     var url = "/Asset/Details?id=" + id;
-    $('#titleBigModal').html("Asset Details");
-    loadBigModal(url);
+    $('#titleExtraBigModal').html("Asset Details");
+    loadExtraBigModal(url);
+};
+
+var DetailsGeneral = function (id) {
+    var url = "/Asset/DetailsGeneral?id=" + id;
+    $('#titleExtraBigModal').html("Asset Details");
+    loadExtraBigModal(url);
 };
 
 var AssignEmployeeInfo = function (id) {
@@ -13,24 +19,14 @@ var AssignEmployeeInfo = function (id) {
         FieldValidationAlert(null, 'This asset is not assigned yet to employees. ', "info");
     }
     else {
-        var url = "/Employee/Details?id=" + id;
-        $('#titleBigModal').html("Employee Details");
+        var url = "/UserManagement/ViewUserDetails?Id=" + id;
+        $('#titleBigModal').html("User Details ");
         loadBigModal(url);
     }
 };
 
 var UnassignedAssetWarning = function (id) {
     FieldValidationAlert(null, 'This asset is not assigned yet to employees. ', "info");
-};
-
-
-var UpdateAssignee = function (id) {
-    var url = "/Asset/AddEdit?id=" + id;
-    $('#titleExtraBigModal').html("Edit Asset Assignee");
-    loadExtraBigModal(url);
-    setTimeout(function () {
-        activaTab('divOtherTab');
-    }, 300);
 };
 
 
@@ -94,6 +90,14 @@ var AddNewComment = function (IsView) {
     });
 };
 
+var UpdateAssignee = function (id) {
+    var url = "/Asset/AddEdit?id=" + id;
+    $('#titleExtraBigModal').html("Edit Asset Assignee");
+    loadExtraBigModal(url);
+    setTimeout(function () {
+        activaTab('divOtherTab');
+    }, 300);
+};
 
 var DeleteComment = function (id, IsView) {
     Swal.fire({
@@ -140,6 +144,11 @@ var UIRoutSwitch = function (IsView) {
     }
 }
 
+var AllocateAsset = function (id) {
+    var url = "/Asset/AllocateAsset?id=" + id;
+    $('#titleExtraBigModal').html("Allocate Asset");
+    loadExtraBigModal(url);
+};
 
 var PrintAsset = function (id) {
     location.href = "/Asset/PrintAsset?id=" + id;
@@ -215,6 +224,23 @@ var UpdateBarcode = function () {
     });
 }
 
+var GenerateQRCode = function () {
+    var _QRCode = $("#QRCode").val();
+    if (_QRCode.length > 20) {
+        FieldValidationAlert('#QRCode', 'Max lenght is 20.', "warning");
+        return;
+    }
+    $('#divQRCode').empty();
+    var qrcode = new QRCode("divQRCode", {
+        text: _QRCode,
+        width: 180, //default 128
+        height: 180,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+    });
+}
+
 
 var PreparedFormObj = function () {
     var _FormData = new FormData()
@@ -241,9 +267,19 @@ var PreparedFormObj = function () {
     _FormData.append('Location', $("#Location").val())
     _FormData.append('ImageURL', $("#ImageURL").val())
     _FormData.append('ImageURLDetails', $('#ImageURLDetails')[0].files[0])
+    _FormData.append('PurchaseReceipt', $("#PurchaseReceipt").val())
+    _FormData.append('PurchaseReceiptDetails', $('#PurchaseReceiptDetails')[0].files[0])
+
     _FormData.append('AssetStatus', $("#AssetStatus").val())
     _FormData.append('Note', $("#Note").val())
     _FormData.append('Barcode', $('#Barcode').attr('src'))
+
+
+    _FormData.append('QRCode', $("#QRCode").val())
+    var _divQRCode = document.getElementById('divQRCode');
+    var _src = _divQRCode.children[0].toDataURL("image/png");
+    _FormData.append('QRCodeImage', _src)
+
     _FormData.append('AssignEmployeeId', $("#AssignEmployeeId").val())
     _FormData.append('CurrentURL', $("#CurrentURL").val())
     return _FormData;

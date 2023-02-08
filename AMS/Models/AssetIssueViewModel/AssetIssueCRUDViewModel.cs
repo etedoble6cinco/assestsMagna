@@ -25,6 +25,7 @@ namespace AMS.Models.AssetIssueViewModel
         [Display(Name = "Resolved Date")]
         public DateTime ResolvedDate { get; set; } = DateTime.Now.AddDays(7);
         public string Comment { get; set; }
+        public bool IsAdmin { get; set; }
 
         public static implicit operator AssetIssueCRUDViewModel(AssetIssue _AssetIssue)
         {

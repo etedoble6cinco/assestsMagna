@@ -26,7 +26,7 @@ namespace AMS.Controllers
             _accessor = accessor;
         }
 
-        [Authorize(Roles = MainMenu.LoginHistory.RoleName)]
+        [Authorize(Roles = RoleViewModel.LoginHistory)]
         [HttpGet]
         public IActionResult Index()
         {

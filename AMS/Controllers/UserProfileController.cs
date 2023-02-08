@@ -1,15 +1,11 @@
 ﻿using AMS.Data;
-using AMS.Models;
-using AMS.Models.UserAccountViewModel;
-using AMS.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Linq;
-using System.Linq.Dynamic.Core;
-using System.Threading.Tasks;
+using AMS.Models;
+using AMS.Models.UserProfileViewModel;
+using AMS.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace AMS.Controllers
 {
@@ -17,49 +13,40 @@ namespace AMS.Controllers
     [Route("[controller]/[action]")]
     public class UserProfileController : Controller
     {
-        private readonly IRoles _roles;
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ICommon _iCommon;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public UserProfileController(UserManager<ApplicationUser> userManager,
-            ApplicationDbContext context,
-            RoleManager<IdentityRole> roleManager,
-            IRoles roles,
-            ICommon iCommon)
+        public UserProfileController(UserManager<ApplicationUser> userManager, ICommon iCommon,
+            ApplicationDbContext context)
         {
             _context = context;
-            _roleManager = roleManager;
-            _userManager = userManager;
-            _roles = roles;
             _iCommon = iCommon;
+            _userManager = userManager;
         }
 
-        [Authorize(Roles = Pages.MainMenu.UserProfile.RoleName)]
+        [Authorize(Roles = Pages.RoleViewModel.UserProfile)]
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var _ApplicationUser = await _userManager.FindByEmailAsync(HttpContext.User.Identity.Name);
-            UserProfileCRUDViewModel _UserProfileCRUDViewModel = new UserProfileCRUDViewModel();
-            if (_ApplicationUser.Id != null)
-            {
-                _UserProfileCRUDViewModel = _context.UserProfile.Where(x => x.ApplicationUserId == _ApplicationUser.Id).SingleOrDefault();
-            }
-            return View(_UserProfileCRUDViewModel);
+            var _UserName = User.Identity.Name;
+            var _UserProfile = _context.UserProfile.FirstOrDefault(x => x.Email == _UserName);
+            var result = await _iCommon.GetUserProfileDetails().Where(x => x.UserProfileId == _UserProfile.UserProfileId).SingleOrDefaultAsync();
+            result.listAssetAssignedCRUDViewModel = await _iCommon.GetAssetAssignedListAllStatus(_UserProfile.UserProfileId).ToListAsync();
+            return View(result);
         }
 
         [HttpGet]
-        public async Task<IActionResult> ResetPasswordGeneral(string ApplicationUserId)
+        public async Task<IActionResult> ResetPassword(string ApplicationUserId)
         {
             var _ApplicationUser = await _userManager.FindByIdAsync(ApplicationUserId);
-            ResetPasswordViewModel _ResetPasswordViewModel = new ResetPasswordViewModel();
+            ResetPasswordViewModel _ResetPasswordViewModel = new();
             _ResetPasswordViewModel.ApplicationUserId = _ApplicationUser.Id;
-            return PartialView("_ResetPasswordGeneral", _ResetPasswordViewModel);
+            return PartialView("_ResetPassword", _ResetPasswordViewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> ResetPasswordGeneral(ResetPasswordViewModel vm)
+        public async Task<IActionResult> SaveResetPassword(ResetPasswordViewModel vm)
         {
             try
             {
@@ -85,7 +72,7 @@ namespace AMS.Controllers
             catch (Exception ex)
             {
                 return new JsonResult("error" + ex.Message);
-                throw ex;
+                throw;
             }
         }
     }

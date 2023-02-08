@@ -18,11 +18,13 @@ namespace AMS.Data
             else
             {
                 await functional.CreateDefaultSuperAdmin();
-                await functional.CreateDefaultOtherUser();
                 await functional.CreateDefaultEmailSettings();
                 await functional.CreateDefaultIdentitySettings();
                 await functional.CreateAsset();
-                functional.InitAppData();
+                
+                await functional.InitAppData();
+                await functional.GenerateUserUserRole();
+                await functional.CreateDefaultOtherUser();
             }
         }
     }

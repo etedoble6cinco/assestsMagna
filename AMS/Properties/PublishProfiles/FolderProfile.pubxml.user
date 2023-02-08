@@ -4,7 +4,13 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 -->
 <Project>
   <PropertyGroup>
-    <_PublishTargetUrl>C:\Users\analista.sistemas\Documents\assestsMagna\AMS\bin\Release\net6.0\publish\</_PublishTargetUrl>
-    <History>True|2023-01-13T00:39:55.1333848Z;True|2023-01-10T13:23:31.4443063-08:00;True|2023-01-10T13:07:43.9772748-08:00;True|2023-01-10T13:06:07.4857996-08:00;True|2023-01-09T16:40:46.0622021-08:00;True|2023-01-09T16:34:13.0294341-08:00;True|2023-01-09T16:30:12.8469711-08:00;True|2023-01-04T16:12:36.9908737-08:00;True|2022-12-27T11:57:55.9070707-08:00;</History>
+    <History>True|2023-02-06T18:23:24.6736752Z;True|2023-02-06T10:03:19.7227387-08:00;True|2023-02-06T10:01:09.9031220-08:00;True|2023-02-06T09:56:40.3293759-08:00;True|2023-02-06T09:45:21.2360386-08:00;True|2023-02-06T09:09:17.5880033-08:00;True|2023-02-06T08:33:48.9873145-08:00;True|2023-02-03T15:56:45.5165210-08:00;True|2023-02-03T14:18:09.8469656-08:00;True|2023-02-03T14:16:07.8267428-08:00;True|2023-02-03T14:12:46.5894742-08:00;True|2023-02-03T13:52:57.6581393-08:00;False|2023-02-03T13:47:16.3008223-08:00;</History>
+    <_PublishTargetUrl>C:\Users\analista.sistemas\Documents\AM-V2\AMS\bin\Release\net6.0\publish\</_PublishTargetUrl>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
   </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="connMSSQL">
+      <Value>Server=SMI-SS-WEBSERV1%3bDatabase=AMSDev%3bUser ID=serversmi%3bPassword=adminserver123!%3bMultipleActiveResultSets=true%3bPersist Security Info=False</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
 </Project>

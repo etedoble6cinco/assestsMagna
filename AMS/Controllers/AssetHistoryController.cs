@@ -1,15 +1,11 @@
 using AMS.Data;
-using AMS.Helpers;
 using AMS.Models;
 using AMS.Models.AssetHistoryViewModel;
 using AMS.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
 using System.Linq.Dynamic.Core;
-using System.Threading.Tasks;
 
 namespace AMS.Controllers
 {
@@ -26,7 +22,7 @@ namespace AMS.Controllers
             _iCommon = iCommon;
         }
 
-        [Authorize(Roles = Pages.MainMenu.AssetHistory.RoleName)]
+        [Authorize(Roles = Pages.RoleViewModel.AssetHistory)]
         [HttpGet]
         public IActionResult Index()
         {
@@ -62,7 +58,7 @@ namespace AMS.Controllers
                 {
                     searchValue = searchValue.ToLower();
                     _GetGridItem = _GetGridItem.Where(obj => obj.Id.ToString().Contains(searchValue)
-                    || obj.AssetId.ToString().ToLower().Contains(searchValue)
+                    || obj.AssetDisplay.ToLower().Contains(searchValue)
                     || obj.Action.ToLower().Contains(searchValue)
                     || obj.AssignEmployeeId.ToString().Contains(searchValue)
                     || obj.Note.ToLower().Contains(searchValue)

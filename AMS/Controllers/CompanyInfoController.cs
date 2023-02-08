@@ -23,7 +23,7 @@ namespace InvenToryPlus.Controllers
             _iCommon = iCommon;
         }
 
-        [Authorize(Roles = MainMenu.CompanyInfo.RoleName)]
+        [Authorize(Roles = RoleViewModel.CompanyInfo)]
         [HttpGet]
         public async Task<IActionResult> Index()
         {

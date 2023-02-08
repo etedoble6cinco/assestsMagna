@@ -10,16 +10,16 @@ namespace AMS.Models.CompanyInfoViewModel
         [Required]
         public string Name { get; set; }
         [Display(Name = "Company Logo")]
-        public string? Logo { get; set; }
-        public IFormFile? CompanyLogo { get; set; }
-        public string? Currency { get; set; }
-        public string? Address { get; set; }
-        public string? City { get; set; }
-        public string? Country { get; set; }
-        public string? Phone { get; set; }
-        public string? Email { get; set; }
-        public string? Fax { get; set; }
-        public string? Website { get; set; }
+        public string Logo { get; set; }
+        public IFormFile CompanyLogo { get; set; }
+        public string Currency { get; set; }
+        public string Address { get; set; }
+        public string City { get; set; }
+        public string Country { get; set; }
+        public string Phone { get; set; }
+        public string Email { get; set; }
+        public string Fax { get; set; }
+        public string Website { get; set; }
 
         public static implicit operator CompanyInfoCRUDViewModel(CompanyInfo _CompanyInfo)
         {

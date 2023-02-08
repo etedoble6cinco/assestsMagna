@@ -20,7 +20,7 @@ namespace AMS.Controllers
             _iCommon = iCommon;
         }
 
-        [Authorize(Roles = Pages.MainMenu.SuperAdmin.RoleName)]
+        [Authorize(Roles = Pages.RoleViewModel.SuperAdmin)]
         [HttpGet]
         public IActionResult Index()
         {

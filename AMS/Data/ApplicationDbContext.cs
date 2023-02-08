@@ -27,9 +27,9 @@ namespace AMS.Data
 
         //AMS
         public DbSet<Asset> Asset { get; set; }
+        public DbSet<AssetAssigned> AssetAssigned { get; set; }
         public DbSet<AssetHistory> AssetHistory { get; set; }
         public DbSet<Comment> Comment { get; set; }
-        public DbSet<Employee> Employee { get; set; }
         public DbSet<Designation> Designation { get; set; }
         public DbSet<AssetCategorie> AssetCategorie { get; set; }
         public DbSet<AssetSubCategorie> AssetSubCategorie { get; set; }
@@ -42,6 +42,9 @@ namespace AMS.Data
         public DbSet<AssetIssue> AssetIssue { get; set; }
         public DbSet<AssetRequest> AssetRequest { get; set; }
         public DbSet<SubscriptionRequest> SubscriptionRequest { get; set; }
+        public DbSet<Categories> Categories { get; set; }
+        public DbSet<ManageUserRoles> ManageUserRoles { get; set; }
+        public DbSet<ManageUserRolesDetails> ManageUserRolesDetails { get; set; }
 
         public DbSet<ItemDropdownListViewModel> ItemDropdownListViewModel { get; set; }
     }

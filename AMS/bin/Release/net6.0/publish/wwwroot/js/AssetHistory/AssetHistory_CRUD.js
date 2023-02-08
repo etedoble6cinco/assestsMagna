@@ -1,13 +1,13 @@
 var Details = function (id) {
     var url = "/AssetHistory/Details?id=" + id;
-    $('#titleMediumModal').html("Asset History Details");
-    loadMediumModal(url);
+    $('#titleBigModal').html("Asset History Details");
+    loadBigModal(url);
 };
 
 var AssetDetails = function (id) {
     var url = "/Asset/Details?id=" + id;
-    $('#titleBigModal').html("Asset Details");
-    loadBigModal(url);
+    $('#titleExtraBigModal').html("Asset Details");
+    loadExtraBigModal(url);
 };
 
 var AddEdit = function (id) {

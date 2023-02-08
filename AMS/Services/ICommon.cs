@@ -1,13 +1,15 @@
 ﻿using UAParser;
+using AMS.Data;
 using AMS.Models;
+using AMS.Models.UserProfileViewModel;
 using AMS.Models.CommonViewModel;
 using AMS.Models.AssetViewModel;
-using AMS.Models.EmployeeViewModel;
 using AMS.Models.AssetHistoryViewModel;
-using AMS.Models.UserAccountViewModel;
 using AMS.Models.CommentViewModel;
 using AMS.Models.CompanyInfoViewModel;
-using Microsoft.AspNetCore.Identity;
+using AMS.Models.AssetRequestViewModel;
+using AMS.Models.AssetIssueViewModel;
+using AMS.Models.ManageUserRolesVM;
 
 namespace AMS.Services
 {
@@ -17,9 +19,11 @@ namespace AMS.Services
         Task<SMTPEmailSetting> GetSMTPEmailSetting();
         Task<SendGridSetting> GetSendGridEmailSetting();
         UserProfile GetByUserProfile(Int64 id);
+        IQueryable<UserProfileCRUDViewModel> GetUserProfileDetails();
         UserProfileCRUDViewModel GetByUserProfileInfo(Int64 id);
         Task<bool> InsertLoginHistory(LoginHistory _LoginHistory, ClientInfo _ClientInfo);
         IQueryable<ItemDropdownListViewModel> GetCommonddlData(string strTableName);
+        IEnumerable<T> GetTableData<T>(ApplicationDbContext dbContext) where T : class;
         IQueryable<ItemDropdownListViewModel> LoadddlDepartment();
         IQueryable<ItemDropdownListViewModel> LoadddlSubDepartment();
         IQueryable<ItemDropdownListViewModel> LoadddlAssetCategorie();
@@ -29,15 +33,20 @@ namespace AMS.Services
         IQueryable<ItemDropdownListViewModel> LoadddlEmployee();
         IQueryable<ItemDropdownListViewModel> LoadddlDesignation();
         IQueryable<AssetCRUDViewModel> GetAssetList();
-        IQueryable<AssetCRUDViewModel> GetGridAssetList();
-        IQueryable<EmployeeCRUDViewModel> GetEmployeeList();
-        IQueryable<EmployeeCRUDViewModel> GetEmployeeGridList();
+        IQueryable<AssetCRUDViewModel> GetGridAssetList(bool _IsAdmin);
         Task<AssetHistory> AddAssetHistory(AssetHistoryCRUDViewModel vm);
         IQueryable<AssetHistoryCRUDViewModel> GetAssetHistoryList();
         IQueryable<CommentCRUDViewModel> GetCommentList();
         IQueryable<CommentCRUDViewModel> GetCommentList(Int64 AssetId);
-        IQueryable<BarcodeViewModel> GetBarcodeList();
+        IQueryable<ScannerCodeViewModel> GetBarcodeList();
+        IQueryable<ScannerCodeViewModel> GetQRcodeList();
         CompanyInfoCRUDViewModel GetCompanyInfo();
-        Task<UpdateRoleViewModel> GetRoleByUser(string _ApplicationUserId, UserManager<ApplicationUser> _userManager, RoleManager<IdentityRole> _roleManager);
+        Task<Int64> GetLoginEmployeeId(string _UserEmail);
+        IQueryable<AssetAssignedCRUDViewModel> GetAssetAssignedList(Int64 _EmployeeId);
+        IQueryable<AssetAssignedCRUDViewModel> GetAssetAssignedListAllStatus(Int64 _EmployeeId);
+        DownloadPurchaseReceiptViewModel GetDownloadDetails(Int64 id);
+        IQueryable<AssetRequestCRUDViewModel> GetAssetRequestList(bool _IsAdmin);
+        IQueryable<AssetIssueCRUDViewModel> GetAssetIssueList(bool _IsAdmin);
+        Task<List<ManageUserRolesDetails>> GetManageRoleDetailsList(Int64 id);
     }
 }
