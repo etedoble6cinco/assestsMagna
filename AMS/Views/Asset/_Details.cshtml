@@ -77,6 +77,10 @@
                 <span>@Model.PurchaseReceipt</span>
                 <input type="button" id="btnDownloadPurchaseReceipt" class="btn btn-xs btn-danger" value="Download"
                     onclick="DownloadPurchaseReceipt(@Model.Id);" />
+                     <input type="button" id="btnPreviewPurchaseReceipt" data-toggle="modal" data-target="#PdfPreview" class="btn btn-xs btn-info" value="Preview"
+                    onclick="PreviewPurchaseReceipt(@Model.Id);" />
+
+
             }
         </td>
     </tr>
@@ -119,6 +123,29 @@
     </tr>
 </table>
 
+<!-- Modal -->
+<div class="modal fade" id="PdfPreview" tabindex="-1" role="dialog" aria-labelledby="..." aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <canvas id="PdfPurchaseReceipt">
+        
+      </canvas>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 <script>
     var DownloadPurchaseReceipt = function (id) {
         $("#btnDownloadPurchaseReceipt").val("Download...");
@@ -139,6 +166,8 @@
             }
         });
     }
+
+
 
     var base64ToArrayBuffer = function (base64) {
         var binaryString = window.atob(base64);

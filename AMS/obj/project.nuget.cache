@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "8prP93E/i10lViGSHhLVhvNPupMAGKhfyIhnwHMZasN3qQMmi8j0jdxxDTwuwqVmxKXgnGgVUkr+HYVy0WBPdQ==",
+  "dgSpecHash": "UeGZN4czjX2N10TRMX1ZUcHVd38dcPquwk4NNAg4P8gp6tnckqfi1RPI+jM57/PqZkM/5JDS/M9AWW/H7bj3oA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\analista.sistemas\\Documents\\AM-V2\\AMS\\AMS.csproj",
+  "projectFilePath": "C:\\Users\\analista.sistemas\\Documents\\assestsMagna\\AMS\\AMS.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\analista.sistemas\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\analista.sistemas\\.nuget\\packages\\messagepack\\2.1.152\\messagepack.2.1.152.nupkg.sha512",

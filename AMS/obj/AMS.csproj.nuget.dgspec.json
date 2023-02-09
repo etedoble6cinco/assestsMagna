@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\analista.sistemas\\Documents\\AM-V2\\AMS\\AMS.csproj": {}
+    "C:\\Users\\analista.sistemas\\Documents\\assestsMagna\\AMS\\AMS.csproj": {}
   },
   "projects": {
-    "C:\\Users\\analista.sistemas\\Documents\\AM-V2\\AMS\\AMS.csproj": {
+    "C:\\Users\\analista.sistemas\\Documents\\assestsMagna\\AMS\\AMS.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\analista.sistemas\\Documents\\AM-V2\\AMS\\AMS.csproj",
+        "projectUniqueName": "C:\\Users\\analista.sistemas\\Documents\\assestsMagna\\AMS\\AMS.csproj",
         "projectName": "AMS",
-        "projectPath": "C:\\Users\\analista.sistemas\\Documents\\AM-V2\\AMS\\AMS.csproj",
+        "projectPath": "C:\\Users\\analista.sistemas\\Documents\\assestsMagna\\AMS\\AMS.csproj",
         "packagesPath": "C:\\Users\\analista.sistemas\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\analista.sistemas\\Documents\\AM-V2\\AMS\\obj\\",
+        "outputPath": "C:\\Users\\analista.sistemas\\Documents\\assestsMagna\\AMS\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

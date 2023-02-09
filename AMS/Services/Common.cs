@@ -32,7 +32,7 @@ namespace AMS.Services
 
             if (_IFormFile != null)
             {
-                string uploadsFolder = Path.Combine(_iHostingEnvironment.ContentRootPath, "wwwroot/upload");
+                string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot//upload");
 
                 if (_IFormFile.FileName == null)
                     ProfilePictureFileName = Guid.NewGuid().ToString() + "_" + "blank-person.png";
@@ -540,11 +540,13 @@ namespace AMS.Services
         }
         public DownloadPurchaseReceiptViewModel GetDownloadDetails(Int64 id)
         {
+            FileInfo fileInfo = null;
             DownloadPurchaseReceiptViewModel vm = new();
             try
             {
                 var _Asset = _context.Asset.Where(x => x.Id == id).SingleOrDefault();
-                string _WebRootPath = _iHostingEnvironment.WebRootPath + _Asset.PurchaseReceipt;
+                fileInfo = new FileInfo(Path.Combine(Directory.GetCurrentDirectory() + "//wwwroot/" + _Asset.PurchaseReceipt));
+                string _WebRootPath = fileInfo.FullName;
                 using (var _MemoryStream = new MemoryStream())
                 {
                     using (FileStream file = new FileStream(_WebRootPath, FileMode.Open, FileAccess.Read))
