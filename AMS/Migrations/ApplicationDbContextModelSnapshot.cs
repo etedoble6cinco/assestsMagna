@@ -170,6 +170,9 @@ namespace AMS.Migrations
                     b.Property<int?>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<string>("SpecifySupplier")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("SubCategory")
                         .HasColumnType("int");
 

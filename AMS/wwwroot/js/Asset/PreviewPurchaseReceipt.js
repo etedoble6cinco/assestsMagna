@@ -10,7 +10,7 @@
             // saveByteArray(result.FileName, _base64ToArrayBuffer, result.ContentType);
             // The workerSrc property shall be specified.
             pdfjsLib.GlobalWorkerOptions.workerSrc =
-                '../lib/pdfjs/pdf.worker.min.js';
+                '../lib/pdfjs/pdf.worker.js';
             var pdfData = atob(result.DocByte);
             // Using DocumentInitParameters object to load binary data.
             var loadingTask = pdfjsLib.getDocument({ data: pdfData });
@@ -38,7 +38,7 @@
                     };
                     var renderTask = page.render(renderContext);
                     renderTask.promise.then(function () {
-
+                        $('#PdfPreview').modal('show');
                     });
                 });
             }, function (reason) {
@@ -48,4 +48,10 @@
 
         }
     });
+}
+
+function ClosePreviewPurchaseReceiptModal() {
+    $('#PdfPreview').modal('hide');
+    $("#PdfPreview").remove();
+    $('.modal-backdrop').remove();
 }

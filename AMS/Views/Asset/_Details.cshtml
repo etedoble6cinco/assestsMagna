@@ -50,6 +50,10 @@
         <th>Supplier</th>
         <td>@Model.SupplierDisplay</td>
     </tr>
+     <tr>
+        <th>Specify Supplier</th>
+        <td>@Model.SpecifySupplier</td>
+    </tr>
     <tr>
         <th>US or MX Purchase</th>
         <td>@Model.Location</td>
@@ -77,7 +81,7 @@
                 <span>@Model.PurchaseReceipt</span>
                 <input type="button" id="btnDownloadPurchaseReceipt" class="btn btn-xs btn-danger" value="Download"
                     onclick="DownloadPurchaseReceipt(@Model.Id);" />
-                     <input type="button" id="btnPreviewPurchaseReceipt" data-toggle="modal" data-target="#PdfPreview" class="btn btn-xs btn-info" value="Preview"
+                     <input type="button" id="btnPreviewPurchaseReceipt" class="btn btn-xs btn-info" value="Preview"
                     onclick="PreviewPurchaseReceipt(@Model.Id);" />
 
 
@@ -128,8 +132,8 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title" id="exampleModalLabel"> Preview Purchase Receipt</h5>
+        <button type="button" class="close" onclick="ClosePreviewPurchaseReceiptModal()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -137,8 +141,8 @@
         
       </canvas>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-secondary" onclick="ClosePreviewPurchaseReceiptModal()" data-dismiss="modal">Close</button>
+        
       </div>
     </div>
   </div>
