@@ -50,6 +50,10 @@
         <th>Supplier</th>
         <td>@Model.SupplierDisplay</td>
     </tr>
+     <tr>
+        <th>Specify Supplier</th>
+        <td>@Model.SpecifySupplier</td>
+    </tr>
     <tr>
         <th>US or MX Purchase</th>
         <td>@Model.Location</td>
@@ -77,6 +81,10 @@
                 <span>@Model.PurchaseReceipt</span>
                 <input type="button" id="btnDownloadPurchaseReceipt" class="btn btn-xs btn-danger" value="Download"
                     onclick="DownloadPurchaseReceipt(@Model.Id);" />
+                     <input type="button" id="btnPreviewPurchaseReceipt" class="btn btn-xs btn-info" value="Preview"
+                    onclick="PreviewPurchaseReceipt(@Model.Id);" />
+
+
             }
         </td>
     </tr>
@@ -119,6 +127,29 @@
     </tr>
 </table>
 
+<!-- Modal -->
+<div class="modal fade" id="PdfPreview" tabindex="-1" role="dialog" aria-labelledby="..." aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> Preview Purchase Receipt</h5>
+        <button type="button" class="close" onclick="ClosePreviewPurchaseReceiptModal()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <canvas id="PdfPurchaseReceipt">
+        
+      </canvas>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="ClosePreviewPurchaseReceiptModal()" data-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 <script>
     var DownloadPurchaseReceipt = function (id) {
         $("#btnDownloadPurchaseReceipt").val("Download...");
@@ -139,6 +170,8 @@
             }
         });
     }
+
+
 
     var base64ToArrayBuffer = function (base64) {
         var binaryString = window.atob(base64);

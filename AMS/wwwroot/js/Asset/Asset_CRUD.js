@@ -256,6 +256,7 @@ var PreparedFormObj = function () {
     _FormData.append('Category', $("#Category").val())
     _FormData.append('SubCategory', $("#SubCategory").val())
     _FormData.append('Supplier', $("#Supplier").val())
+    _FormData.append('SpecifySupplier', $("#SpecifySupplier").val())
 
     _FormData.append('Department', $("#Department").val())
     _FormData.append('SubDepartment', $("#SubDepartment").val())

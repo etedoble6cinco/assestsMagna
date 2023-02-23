@@ -97,17 +97,18 @@ $(document).ready(function () {
                     },
                     'copyHtml5',
                     'excelHtml5',
+                   
                     {
                         extend: 'csvHtml5',
                         exportOptions: {
-                            columns: [2, 3, 4, 5, 6, 7],
+                            columns: [2, 3, 4, 5, 6, 7,8,9,10],
                             page: 'all'
                         }
                     },
                     {
                         extend: 'print',
                         exportOptions: {
-                            columns: [2, 3, 4, 5, 6, 7],
+                            columns: [2, 3, 4, 5, 6, 7,8,9,10],
                             page: 'all'
                         }
                     }
@@ -154,7 +155,13 @@ $(document).ready(function () {
 
                 }
             },
-            { "data": "UnitPrice", "name": "UnitPrice" },
+        
+
+            { "data": "SpecifySupplier", "name": "SpecifySupplier" },
+            { "data": "Location", "name": "Location" },
+            { "data": "DepartmentDisplay","name": "DepartmentDisplay"},
+            { "data": "CategoryDisplay","name": "CategoryDisplay"},
+      
             {
                 "data": "DateOfPurchase",
                 "name": "DateOfPurchase",
@@ -199,7 +206,7 @@ $(document).ready(function () {
         ],
 
         'columnDefs': [{
-            'targets': [1, 8, 9, 10, 11],
+            'targets': [1,11],
             'orderable': false,
         }],
 
@@ -207,4 +214,5 @@ $(document).ready(function () {
     });
 
 });
+
 
