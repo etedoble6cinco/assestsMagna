@@ -154,11 +154,7 @@ $(document).ready(function () {
 
                 }
             },
-       
-            { "data": "SpecifySupplier", "name": "Supplier" },
-            { "data": "Location", "name": "Location" },
-            { "data": "DepartmentDisplay", "name": "Department" },
-            { "data": "CategoryDisplay", "name": "Category" },
+            { "data": "UnitPrice", "name": "UnitPrice" },
             {
                 "data": "DateOfPurchase",
                 "name": "DateOfPurchase",

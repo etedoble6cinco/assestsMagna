@@ -18,7 +18,6 @@
             <input type="hidden" asp-for="SubCategory" />
             <input type="hidden" asp-for="SubDepartment" />
             <input type="hidden" asp-for="Quantity" />
-            <input type="hidden" asp-for="Supplier" />
 
             <form id="frmAsset">
                 <div class="card card-primary card-outline card-tabs">
@@ -144,13 +143,15 @@
                                             </div>
                                         </div>
                                
-                                  
                                         <div class="form-group row">
-                                            <label asp-for="SpecifySupplier" class="col-sm-3 col-form-label"></label>
-                                           <div class="col-sm-9">
-                                            <input asp-for="SpecifySupplier" type="text" class="form-control"/>
-                                               <span asp-validation-for="SpecifySupplier" class="text-danger"></span>
-                                           </div>
+                                            <label asp-for="Supplier" class="col-sm-3 col-form-label"></label>
+                                            <div class="col-sm-9">
+                                                <select asp-for="Supplier" asp-items="@ViewBag._LoadddlSupplier"
+                                                    id="Supplier" class="form-control" style="width:100%;">
+                                                    <option disabled selected>--- SELECT ---</option>
+                                                </select>
+                                                <span asp-validation-for="Supplier" class="text-danger"></span>
+                                            </div>
                                         </div>
                                         <div class="form-group row">
                                             <label asp-for="Department" class="col-sm-3 col-form-label"></label>

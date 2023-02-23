@@ -87,6 +87,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXNzZXRDYXRlZ29yaWVcX0RldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/analista.sistemas/Documents/assestsMagna/AMS/Views/AssetConsult/GetAssetConsult.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXNzZXRDb25zdWx0XEdldEFzc2V0Q29uc3VsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/analista.sistemas/Documents/assestsMagna/AMS/Views/AssetHistory/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXNzZXRIaXN0b3J5XEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 

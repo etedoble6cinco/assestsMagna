@@ -73,9 +73,6 @@ namespace AMS.Models.AssetViewModel
         public string Barcode { get; set; }
         public string QRCode { get; set; }
         public string QRCodeImage { get; set; }
-
-        [Display(Name = "Supplier")]
-        public string SpecifySupplier { get; set; }
         [Display(Name = "Comment Message")]
         public string CommentMessage { get; set; }
         public string CurrentURL { get; set; }
@@ -123,7 +120,6 @@ namespace AMS.Models.AssetViewModel
                 CreatedBy = _Asset.CreatedBy,
                 ModifiedBy = _Asset.ModifiedBy,
                 Cancelled = _Asset.Cancelled,
-                SpecifySupplier = _Asset.SpecifySupplier,   
             };
         }
 
@@ -163,7 +159,6 @@ namespace AMS.Models.AssetViewModel
                 CreatedBy = vm.CreatedBy,
                 ModifiedBy = vm.ModifiedBy,
                 Cancelled = vm.Cancelled,
-                SpecifySupplier = vm.SpecifySupplier,
             };
         }
     }

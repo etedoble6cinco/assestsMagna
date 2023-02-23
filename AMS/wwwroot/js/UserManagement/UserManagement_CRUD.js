@@ -72,7 +72,7 @@ var SaveUser = function () {
     $.ajax({
         type: "POST",
         url: "/UserManagement/AddEditUserAccount",
-        data: PreparedFormObj(),
+        data: PreparedFormObjUser(),
         processData: false,
         contentType: false,
         success: function (result) {
@@ -189,7 +189,7 @@ var AllocateAsset = function (id) {
     loadExtraBigModal(url);
 };
 
-var PreparedFormObj = function () {
+var PreparedFormObjUser = function () {
     var _FormData = new FormData()
     _FormData.append('Id', $("#Id").val())
     _FormData.append('UserProfileId', $("#UserProfileId").val())

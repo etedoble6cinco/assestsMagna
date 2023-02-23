@@ -32,7 +32,7 @@ namespace AMS.Services
 
             if (_IFormFile != null)
             {
-                string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot//upload");
+                string uploadsFolder = Path.Combine(_iHostingEnvironment.ContentRootPath, "wwwroot/upload");
 
                 if (_IFormFile.FileName == null)
                     ProfilePictureFileName = Guid.NewGuid().ToString() + "_" + "blank-person.png";
@@ -245,15 +245,6 @@ namespace AMS.Services
                         join _UserProfile in _context.UserProfile on _Asset.AssignEmployeeId equals _UserProfile.UserProfileId
                         into listEmployee
                         from _Employee in listEmployee.DefaultIfEmpty()
-
-                        join _Categories in _context.AssetCategorie on _Asset.Category equals _Categories.Id
-                        into listCategories 
-                        from _Categories in listCategories.DefaultIfEmpty()
-
-                        join _Department in _context.Department on _Asset.Department equals _Department.Id  
-                        into listDepartment
-                        from _Department in listDepartment.DefaultIfEmpty()
-
                         where _Asset.Cancelled == false
                         select new AssetCRUDViewModel
                         {
@@ -263,15 +254,7 @@ namespace AMS.Services
                             AssetModelNo = _Asset.AssetModelNo,
                             Name = _Asset.Name,
                             AssignEmployeeDisplay = _Asset.AssignEmployeeId == 0 ? "Unassigned" : _Employee.FirstName + " " + _Employee.LastName,
-                            SpecifySupplier = _Asset.SpecifySupplier,
-                            Location = _Asset.Location,
-                              CategoryDisplay = _Categories.Name,
-                            DepartmentDisplay = _Department.Name, 
-   
-                           UnitPrice = _Asset.UnitPrice,
-                         
-                           
-                          
+                            UnitPrice = _Asset.UnitPrice,
                             DateOfPurchase = _Asset.DateOfPurchase,
                             ImageURL = _Asset.ImageURL,
                             IsAdmin = _IsAdmin
@@ -319,7 +302,6 @@ namespace AMS.Services
                             SubCategoryDisplay = _AssetSubCategorie.Name,
                             Quantity = _Asset.Quantity,
                             UnitPrice = _Asset.UnitPrice,
-                            SpecifySupplier = _Asset.SpecifySupplier,   
                             Supplier = _Asset.Supplier,
                             SupplierDisplay = _Supplier.Name,
                             Location = _Asset.Location,
@@ -558,13 +540,11 @@ namespace AMS.Services
         }
         public DownloadPurchaseReceiptViewModel GetDownloadDetails(Int64 id)
         {
-            FileInfo fileInfo = null;
             DownloadPurchaseReceiptViewModel vm = new();
             try
             {
                 var _Asset = _context.Asset.Where(x => x.Id == id).SingleOrDefault();
-                fileInfo = new FileInfo(Path.Combine(Directory.GetCurrentDirectory() + "//wwwroot/" + _Asset.PurchaseReceipt));
-                string _WebRootPath = fileInfo.FullName;
+                string _WebRootPath = _iHostingEnvironment.WebRootPath + _Asset.PurchaseReceipt;
                 using (var _MemoryStream = new MemoryStream())
                 {
                     using (FileStream file = new FileStream(_WebRootPath, FileMode.Open, FileAccess.Read))
