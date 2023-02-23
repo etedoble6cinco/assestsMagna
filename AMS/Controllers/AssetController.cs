@@ -80,10 +80,8 @@ namespace AMS.Controllers
                     || obj.AssetModelNo.ToLower().Contains(searchValue)
                     || obj.Name.ToLower().Contains(searchValue)
                     || obj.AssignEmployeeDisplay.ToLower().Contains(searchValue)
-                    || obj.SpecifySupplier.ToLower().Contains(searchValue)
-                    || obj.DepartmentDisplay.ToLower().Contains(searchValue)
-                    || obj.CategoryDisplay.ToLower().Contains(searchValue)
-                    || obj.Location.ToLower().Contains(searchValue)
+                    || obj.UnitPrice.ToString().Contains(searchValue)
+
                     || obj.DateOfPurchase.ToString().Contains(searchValue));
                 }
 

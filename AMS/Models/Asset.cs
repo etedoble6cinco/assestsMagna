@@ -31,6 +31,5 @@ namespace AMS.Models
         public string Barcode { get; set; }
         public string QRCode { get; set; }
         public string QRCodeImage { get; set; }
-        public string SpecifySupplier { get; set; } 
     }
 }
